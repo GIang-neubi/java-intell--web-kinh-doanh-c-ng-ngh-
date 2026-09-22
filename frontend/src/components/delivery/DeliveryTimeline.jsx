@@ -440,7 +440,7 @@ export default function DeliveryTimeline({ orderId, onUpdated, collapsible = fal
                     <span>Ảnh chứng nhận giao kiện hàng</span>
                   </div>
                   <div style={{ fontSize: '11px', color: '#7e22ce', marginTop: '2px' }}>
-                    Đã đối soát tại điểm giao thành công
+                    {delivery.deliveredAt ? `Đã bàn giao lúc ${formatDate(delivery.deliveredAt)}` : 'Đã đối soát tại điểm giao thành công'}
                   </div>
                 </div>
               </div>
@@ -534,7 +534,10 @@ export default function DeliveryTimeline({ orderId, onUpdated, collapsible = fal
           }}
           onClick={() => setPreviewImage(null)}
         >
-          <div style={{ position: 'relative', maxWidth: '600px', width: '100%', textAlign: 'center' }}>
+          <div
+            style={{ position: 'relative', maxWidth: '600px', width: '100%', textAlign: 'center' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               onClick={() => setPreviewImage(null)}
@@ -548,10 +551,23 @@ export default function DeliveryTimeline({ orderId, onUpdated, collapsible = fal
             <img
               src={resolveImageUrl(previewImage)}
               alt="Proof full"
-              style={{ maxHeight: '80vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+              style={{ maxHeight: '75vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
             />
-            <div style={{ color: '#ffffff', fontSize: '13px', marginTop: '12px', opacity: 0.9 }}>
-              Ảnh chứng minh giao hàng thành công · Đơn #{delivery.orderCode || delivery.id}
+            <div style={{ color: '#ffffff', fontSize: '13px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
+              <span>📸 Bằng chứng giao hàng · Đơn #{delivery.orderCode || delivery.id}</span>
+              <a
+                href={resolveImageUrl(previewImage)}
+                target="_blank"
+                rel="noreferrer"
+                download={`POD_${delivery.orderCode || delivery.id}.jpg`}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  color: '#38bdf8', textDecoration: 'none', fontWeight: 600, fontSize: '12px'
+                }}
+              >
+                <span>Mở ảnh gốc</span>
+                <ExternalLink size={12} />
+              </a>
             </div>
           </div>
         </div>

@@ -3,11 +3,12 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   Truck, Search, Eye, UserCheck, RefreshCw, AlertTriangle,
   CheckCircle2, Clock, MapPin, Phone, ShieldAlert, ArrowUpDown, DollarSign, RotateCcw,
-  Compass, Table, Map as MapIcon
+  Compass, Table, Map as MapIcon, Camera, X, ExternalLink
 } from 'lucide-react';
 import { fetchAdminDeliveries, fetchDeliveryStats, fetchShippers } from '../../../api/delivery';
 import { getErrorMessage } from '../../../api/client';
 import { formatDate, formatPrice, deliveryStatusLabel, deliveryStatusColor, shippingMethodLabel } from '../../../utils/helpers';
+import { resolveImageUrl } from '../../../utils/imageUrl';
 import AdminLoading from '../../../components/admin/AdminLoading';
 import AdminError from '../../../components/admin/AdminError';
 import AdminEmpty from '../../../components/admin/AdminEmpty';
@@ -55,6 +56,7 @@ export default function AdminDeliveryList() {
   const [codModalOpen, setCodModalOpen] = useState(false);
   const [redeliverDelivery, setRedeliverDelivery] = useState(null);
   const [mapDelivery, setMapDelivery] = useState(null);
+  const [proofModalImage, setProofModalImage] = useState(null);
   const [viewMode, setViewMode] = useState('table'); // 'table' | 'fleet_map'
   const [autoRefresh, setAutoRefresh] = useState(true);
 
@@ -543,6 +545,31 @@ export default function AdminDeliveryList() {
                           >
                             {deliveryStatusLabel[d.status] || d.statusDescription || d.status}
                           </span>
+
+                          {d.status === 'DELIVERED' && (
+                            <div style={{ marginTop: '4px' }}>
+                              {d.proofImage ? (
+                                <button
+                                  type="button"
+                                  onClick={() => setProofModalImage({ url: d.proofImage, orderCode: d.orderCode || d.id })}
+                                  style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: '3px',
+                                    padding: '2px 8px', borderRadius: '6px',
+                                    background: '#faf5ff', color: '#7e22ce', border: '1px solid #d8b4fe',
+                                    fontSize: '10px', fontWeight: 700, cursor: 'pointer'
+                                  }}
+                                  title="Xem ảnh bằng chứng giao hàng (POD)"
+                                >
+                                  <Camera size={11} />
+                                  <span>Xem POD</span>
+                                </button>
+                              ) : (
+                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px', padding: '1px 6px', borderRadius: '4px', background: '#fef3c7', color: '#b45309', fontSize: '10px', fontWeight: 600 }}>
+                                  Thiếu POD
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </td>
                         <td>
                           <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{formatDate(d.createdAt)}</div>
@@ -673,6 +700,49 @@ export default function AdminDeliveryList() {
         onClose={() => setMapDelivery(null)}
         delivery={mapDelivery}
       />
+
+      {/* Quick POD Preview Lightbox */}
+      {proofModalImage && (
+        <div
+          className="hg-modal-overlay"
+          onClick={() => setProofModalImage(null)}
+          style={{ zIndex: 9999 }}
+        >
+          <div
+            style={{ position: 'relative', maxWidth: '600px', width: '100%', textAlign: 'center' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setProofModalImage(null)}
+              style={{ position: 'absolute', top: '-40px', right: 0, background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}
+            >
+              <X size={28} />
+            </button>
+            <img
+              src={resolveImageUrl(proofModalImage.url)}
+              alt="Proof of Delivery"
+              style={{ maxHeight: '75vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            />
+            <div style={{ color: '#ffffff', fontSize: '13px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
+              <span>📸 Bằng chứng giao hàng (POD) · Đơn #{proofModalImage.orderCode}</span>
+              <a
+                href={resolveImageUrl(proofModalImage.url)}
+                target="_blank"
+                rel="noreferrer"
+                download={`POD_${proofModalImage.orderCode}.jpg`}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  color: '#38bdf8', textDecoration: 'none', fontWeight: 600, fontSize: '12px'
+                }}
+              >
+                <span>Mở ảnh gốc</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

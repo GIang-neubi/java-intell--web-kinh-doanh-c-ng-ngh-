@@ -4,7 +4,7 @@ import {
   Truck, ArrowLeft, UserCheck, MapPin, Phone, User, Calendar,
   Clock, CheckCircle2, AlertTriangle, ShieldCheck, ExternalLink,
   Package, DollarSign, Image as ImageIcon, X, Navigation, Compass,
-  RotateCcw, CreditCard, Sparkles, Check
+  RotateCcw, CreditCard, Sparkles, Check, Camera
 } from 'lucide-react';
 import { fetchAdminDeliveryDetail, settleDeliveryCod } from '../../../api/delivery';
 import { getErrorMessage } from '../../../api/client';
@@ -544,45 +544,98 @@ export default function AdminDeliveryDetail() {
         )}
 
         {/* Proof of Delivery Card if delivered */}
-        {delivery.proofImage && (
-          <div style={{
-            marginTop: '16px', padding: '14px', borderRadius: '12px',
-            background: '#faf5ff', border: '1px solid #e9d5ff',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <img
-                src={resolveImageUrl(delivery.proofImage)}
-                alt="Proof"
-                onClick={() => setPreviewImage(delivery.proofImage)}
-                style={{
-                  width: 56, height: 56, borderRadius: '10px', objectFit: 'cover',
-                  border: '1px solid #d8b4fe', cursor: 'pointer'
-                }}
-                title="Bấm để xem ảnh phóng to"
-              />
-              <div>
-                <div style={{ fontSize: '13px', fontWeight: 700, color: '#6b21a8' }}>
-                  Ảnh bằng chứng giao hàng thành công
+        {delivery.status === 'DELIVERED' && (
+          delivery.proofImage ? (
+            <div style={{
+              marginTop: '16px', padding: '16px', borderRadius: '14px',
+              background: '#faf5ff', border: '2px solid #e9d5ff',
+              boxShadow: '0 2px 10px rgba(168, 85, 247, 0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '10px' }}>
+                <div>
+                  <span style={{
+                    fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em',
+                    color: '#7e22ce', background: '#f3e8ff', border: '1px solid #d8b4fe',
+                    padding: '2px 8px', borderRadius: '6px',
+                    display: 'inline-flex', alignItems: 'center', gap: 4
+                  }}>
+                    <Camera size={12} />
+                    <span>BẰNG CHỨNG GIAO HÀNG ĐÃ ĐỐI SOÁT (PROOF OF DELIVERY)</span>
+                  </span>
+                  <div style={{ fontSize: '14px', fontWeight: 800, color: '#581c87', marginTop: '4px' }}>
+                    Giao thành công cho {delivery.receiverName || 'Khách hàng'}
+                  </div>
+                  {delivery.deliveredAt && (
+                    <div style={{ fontSize: '12px', color: '#7e22ce', marginTop: '2px' }}>
+                      Thời gian hoàn tất: <strong>{formatDate(delivery.deliveredAt)}</strong>
+                    </div>
+                  )}
                 </div>
-                <div style={{ fontSize: '11px', color: '#7e22ce', marginTop: '2px' }}>
-                  Shipper đã chụp và lưu trữ đối soát
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewImage(delivery.proofImage)}
+                    style={{
+                      padding: '7px 12px', borderRadius: '8px',
+                      background: '#7e22ce', color: '#ffffff', border: 'none',
+                      fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                      display: 'inline-flex', alignItems: 'center', gap: '4px'
+                    }}
+                  >
+                    <span>Phóng to ảnh</span>
+                  </button>
+                  <a
+                    href={resolveImageUrl(delivery.proofImage)}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      padding: '7px 10px', borderRadius: '8px',
+                      background: '#ffffff', color: '#7e22ce', border: '1px solid #d8b4fe',
+                      fontSize: '12px', fontWeight: 700, textDecoration: 'none',
+                      display: 'inline-flex', alignItems: 'center', gap: '4px'
+                    }}
+                  >
+                    <span>Ảnh gốc</span>
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
+              </div>
+
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '10px 12px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e9d5ff'
+              }}>
+                <img
+                  src={resolveImageUrl(delivery.proofImage)}
+                  alt="Proof"
+                  onClick={() => setPreviewImage(delivery.proofImage)}
+                  style={{
+                    width: 64, height: 64, borderRadius: '10px', objectFit: 'cover',
+                    border: '1px solid #d8b4fe', cursor: 'pointer', flexShrink: 0
+                  }}
+                  title="Bấm để xem ảnh phóng to"
+                />
+                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                  <div>Shipper thực hiện: <strong style={{ color: 'var(--text-primary)' }}>{delivery.shipperName || 'Shipper'}</strong> {delivery.shipperPhone && `(${delivery.shipperPhone})`}</div>
+                  <div>Trạng thái thanh toán: <strong style={{ color: delivery.paymentStatus === 'PAID' ? '#047857' : '#b45309' }}>
+                    {delivery.paymentMethod === 'COD' ? (delivery.paymentStatus === 'PAID' ? `Đã thu COD (${formatPrice(delivery.orderTotalAmount || 0)})` : 'Chưa thu COD') : 'Đã thanh toán Online'}
+                  </strong></div>
                 </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setPreviewImage(delivery.proofImage)}
-              style={{
-                padding: '7px 12px', borderRadius: '8px',
-                background: '#f3e8ff', color: '#6b21a8', border: '1px solid #d8b4fe',
-                fontSize: '12px', fontWeight: 700, cursor: 'pointer'
-              }}
-            >
-              Phóng to
-            </button>
-          </div>
+          ) : (
+            <div style={{
+              marginTop: '16px', padding: '14px 16px', borderRadius: '12px',
+              background: '#fffbeb', border: '1px solid #fed7aa',
+              display: 'flex', alignItems: 'center', gap: '10px'
+            }}>
+              <AlertTriangle size={18} style={{ color: '#d97706', flexShrink: 0 }} />
+              <div style={{ fontSize: '12px', color: '#92400e' }}>
+                <strong>Lưu ý đối soát:</strong> Đơn hàng đã chuyển trạng thái &ldquo;Giao hoàn tất&rdquo; nhưng Shipper chưa tải lên ảnh chụp bằng chứng (POD).
+              </div>
+            </div>
+          )
         )}
 
         {/* Detailed Logs Timeline */}
@@ -655,7 +708,10 @@ export default function AdminDeliveryDetail() {
           className="hg-modal-overlay"
           onClick={() => setPreviewImage(null)}
         >
-          <div style={{ position: 'relative', maxWidth: '600px', width: '100%', textAlign: 'center' }}>
+          <div
+            style={{ position: 'relative', maxWidth: '640px', width: '100%', textAlign: 'center' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
               onClick={() => setPreviewImage(null)}
@@ -666,8 +722,24 @@ export default function AdminDeliveryDetail() {
             <img
               src={resolveImageUrl(previewImage)}
               alt="Proof"
-              style={{ maxHeight: '80vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+              style={{ maxHeight: '75vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
             />
+            <div style={{ color: '#ffffff', fontSize: '13px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
+              <span>📸 Bằng chứng giao hàng (POD) · Đơn #{delivery.orderCode || delivery.id}</span>
+              <a
+                href={resolveImageUrl(previewImage)}
+                target="_blank"
+                rel="noreferrer"
+                download={`POD_${delivery.orderCode || delivery.id}.jpg`}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  color: '#38bdf8', textDecoration: 'none', fontWeight: 600, fontSize: '12px'
+                }}
+              >
+                <span>Mở ảnh gốc</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
           </div>
         </div>
       )}

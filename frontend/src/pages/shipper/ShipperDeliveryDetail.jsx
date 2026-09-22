@@ -13,7 +13,8 @@ import {
   shipperArrive,
   shipperCompleteDelivery,
   shipperFailDelivery,
-  uploadProofImage
+  uploadProofImage,
+  shipperUpdateProof
 } from '../../api/delivery';
 import { getErrorMessage } from '../../api/client';
 import { resolveImageUrl } from '../../utils/imageUrl';
@@ -59,6 +60,15 @@ export default function ShipperDeliveryDetail() {
   const [completeNote, setCompleteNote] = useState('');
   const [uploadingProof, setUploadingProof] = useState(false);
   const [showCompleteForm, setShowCompleteForm] = useState(false);
+
+  // Lightbox xem ảnh bằng chứng
+  const [previewImage, setPreviewImage] = useState(null);
+
+  // Modal cập nhật / bổ sung ảnh POD sau khi giao
+  const [showUpdateProofModal, setShowUpdateProofModal] = useState(false);
+  const [updateProofFile, setUpdateProofFile] = useState(null);
+  const [updateProofPreview, setUpdateProofPreview] = useState(null);
+  const [updatingProof, setUpdatingProof] = useState(false);
 
   // Modal báo thất bại
   const [failModalOpen, setFailModalOpen] = useState(false);
@@ -179,6 +189,89 @@ export default function ShipperDeliveryDetail() {
         const file = new File([blob], `proof_${delivery?.orderCode || 'demo'}.jpg`, { type: 'image/jpeg' });
         setProofFile(file);
       });
+  };
+
+  const handleUpdateProofFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUpdateProofFile(file);
+      setUpdateProofPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUseDemoProofForUpdate = () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 400;
+    const ctx = canvas.getContext('2d');
+
+    const grad = ctx.createLinearGradient(0, 0, 600, 400);
+    grad.addColorStop(0, '#0f172a');
+    grad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 600, 400);
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(220, 120, 160, 140);
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(285, 120, 30, 140);
+
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(300, 190, 30, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 30px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('✓', 300, 192);
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText('BIÊN BẢN GIAO HÀNG H&G STORE', 300, 60);
+
+    ctx.font = 'bold 15px monospace';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText(`ĐƠN HÀNG: #${delivery?.orderCode || id}`, 300, 300);
+
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`Khách nhận: ${delivery?.receiverName || 'Khách hàng'} • Đã ký nhận`, 300, 330);
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    setUpdateProofPreview(dataUrl);
+
+    fetch(dataUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const file = new File([blob], `proof_${delivery?.orderCode || 'demo'}.jpg`, { type: 'image/jpeg' });
+        setUpdateProofFile(file);
+      });
+  };
+
+  const handleUpdateProofSubmit = async (e) => {
+    e?.preventDefault();
+    if (!updateProofFile && !updateProofPreview) {
+      alert('Vui lòng chọn ảnh chụp hoặc ảnh mẫu demo trước khi lưu.');
+      return;
+    }
+    setUpdatingProof(true);
+    try {
+      let finalUrl = updateProofPreview;
+      if (updateProofFile) {
+        finalUrl = await uploadProofImage(updateProofFile);
+      }
+      await shipperUpdateProof(delivery.id, finalUrl);
+      setToast('Đã cập nhật ảnh bằng chứng giao hàng thành công!');
+      setShowUpdateProofModal(false);
+      setUpdateProofFile(null);
+      setUpdateProofPreview(null);
+      load();
+    } catch (err) {
+      alert(getErrorMessage(err, 'Lỗi khi cập nhật ảnh bằng chứng'));
+    } finally {
+      setUpdatingProof(false);
+    }
   };
 
   const handleAccept = async () => {
@@ -892,6 +985,136 @@ export default function ShipperDeliveryDetail() {
 
       {/* Primary Touch Flow Buttons */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {/* Proof of Delivery Card when status is DELIVERED */}
+        {delivery.status === 'DELIVERED' && (
+          <div style={{
+            background: '#ffffff',
+            border: '2px solid #a855f7',
+            borderRadius: '16px',
+            padding: '18px',
+            boxShadow: '0 4px 16px rgba(168, 85, 247, 0.12)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+              <div>
+                <span style={{
+                  fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em',
+                  color: '#7e22ce', background: '#faf5ff', border: '1px solid #e9d5ff',
+                  padding: '3px 8px', borderRadius: '6px',
+                  display: 'inline-flex', alignItems: 'center', gap: 4
+                }}>
+                  <Camera size={12} />
+                  <span>BẰNG CHỨNG GIAO HÀNG (PROOF OF DELIVERY)</span>
+                </span>
+                <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--text-primary)', marginTop: '6px' }}>
+                  Đã bàn giao cho {delivery.receiverName}
+                </div>
+                {delivery.deliveredAt && (
+                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    Thời gian giao: {formatDate(delivery.deliveredAt)}
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setUpdateProofFile(null);
+                  setUpdateProofPreview(delivery.proofImage || null);
+                  setShowUpdateProofModal(true);
+                }}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '5px',
+                  padding: '7px 12px', borderRadius: '8px',
+                  background: '#faf5ff', color: '#7e22ce', border: '1px solid #d8b4fe',
+                  fontSize: '11px', fontWeight: 700, cursor: 'pointer', flexShrink: 0
+                }}
+              >
+                <Camera size={13} />
+                <span>{delivery.proofImage ? 'Cập nhật ảnh' : 'Bổ sung ảnh POD'}</span>
+              </button>
+            </div>
+
+            {delivery.proofImage ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: '14px',
+                padding: '12px', borderRadius: '12px', background: '#faf5ff', border: '1px dashed #d8b4fe'
+              }}>
+                <div
+                  onClick={() => setPreviewImage(delivery.proofImage)}
+                  style={{
+                    position: 'relative', width: 68, height: 68, borderRadius: '10px',
+                    overflow: 'hidden', border: '1px solid #c084fc', cursor: 'pointer', flexShrink: 0
+                  }}
+                  title="Bấm để xem ảnh phóng to"
+                >
+                  <img
+                    src={resolveImageUrl(delivery.proofImage)}
+                    alt="Bằng chứng giao hàng"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                  <div style={{
+                    position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.25)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff',
+                    opacity: 0.9
+                  }}>
+                    <Camera size={16} />
+                  </div>
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: '#6b21a8' }}>
+                    Ảnh ký nhận / bàn giao thành công
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#7e22ce', marginTop: '2px' }}>
+                    Đã lưu trữ hệ thống đối soát H&G
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewImage(delivery.proofImage)}
+                    style={{
+                      marginTop: '6px', background: 'none', border: 'none', padding: 0,
+                      color: '#7e22ce', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+                      textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: 4
+                    }}
+                  >
+                    <span>Xem phóng to ảnh</span>
+                    <ExternalLink size={11} />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div style={{
+                padding: '12px', borderRadius: '12px', background: '#fffbeb', border: '1px dashed #fde68a',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <AlertTriangle size={18} style={{ color: '#d97706', flexShrink: 0 }} />
+                  <div style={{ fontSize: '12px', color: '#92400e' }}>
+                    Đơn đã hoàn tất nhưng chưa có ảnh đối soát (POD).
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUpdateProofFile(null);
+                    setUpdateProofPreview(null);
+                    setShowUpdateProofModal(true);
+                  }}
+                  style={{
+                    padding: '6px 12px', borderRadius: '8px',
+                    background: '#d97706', color: '#fff', border: 'none',
+                    fontSize: '11px', fontWeight: 700, cursor: 'pointer', flexShrink: 0
+                  }}
+                >
+                  Bổ sung ngay
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         {delivery.status === 'ASSIGNED' && (
           <button
             type="button"
@@ -1040,7 +1263,11 @@ export default function ShipperDeliveryDetail() {
                 </label>
 
                 {proofPreview && (
-                  <div style={{ position: 'relative', width: 44, height: 44, borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                  <div
+                    style={{ position: 'relative', width: 44, height: 44, borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', cursor: 'pointer' }}
+                    onClick={() => setPreviewImage(proofPreview)}
+                    title="Bấm để xem phóng to ảnh vừa chụp"
+                  >
                     <img
                       src={resolveImageUrl(proofPreview)}
                       alt="Proof"
@@ -1048,7 +1275,7 @@ export default function ShipperDeliveryDetail() {
                     />
                     <button
                       type="button"
-                      onClick={() => { setProofFile(null); setProofPreview(null); }}
+                      onClick={(e) => { e.stopPropagation(); setProofFile(null); setProofPreview(null); }}
                       style={{
                         position: 'absolute', top: 0, right: 0, background: '#ef4444',
                         color: '#fff', border: 'none', borderRadius: '50%', width: 16, height: 16,
@@ -1217,6 +1444,161 @@ export default function ShipperDeliveryDetail() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Cập Nhật Ảnh Bằng Chứng (POD) */}
+      {showUpdateProofModal && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999,
+          background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px'
+        }}>
+          <div style={{
+            background: '#ffffff', borderRadius: '16px', maxWidth: '420px', width: '100%',
+            padding: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid var(--border)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#7e22ce', fontWeight: 800, fontSize: '15px' }}>
+                <Camera size={18} />
+                <span>Bằng Chứng Giao Hàng (POD)</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowUpdateProofModal(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateProofSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '13px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <label style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>
+                  Chọn hoặc chụp ảnh:
+                </label>
+                <button
+                  type="button"
+                  onClick={handleUseDemoProofForUpdate}
+                  style={{
+                    background: 'none', border: 'none', color: '#d97706',
+                    fontSize: '11px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px'
+                  }}
+                >
+                  <Sparkles size={12} />
+                  <span>Tạo ảnh mẫu demo</span>
+                </button>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <label style={{
+                  flex: 1, padding: '12px', borderRadius: '10px', border: '1px dashed #cbd5e1',
+                  background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600,
+                  textAlign: 'center', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                }}>
+                  <Camera size={16} />
+                  <span>{updateProofFile ? 'Đổi ảnh chụp' : 'Chụp / Chọn file ảnh'}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleUpdateProofFileChange}
+                    style={{ display: 'none' }}
+                  />
+                </label>
+
+                {updateProofPreview && (
+                  <div style={{ position: 'relative', width: 50, height: 50, borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+                    <img
+                      src={resolveImageUrl(updateProofPreview)}
+                      alt="Proof preview"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setUpdateProofFile(null); setUpdateProofPreview(null); }}
+                      style={{
+                        position: 'absolute', top: 0, right: 0, background: '#ef4444',
+                        color: '#fff', border: 'none', borderRadius: '50%', width: 16, height: 16,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '10px'
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', marginTop: '6px' }}>
+                <button
+                  type="button"
+                  onClick={() => setShowUpdateProofModal(false)}
+                  style={{ padding: '8px 14px', borderRadius: '8px', background: '#f1f5f9', border: 'none', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingProof}
+                  style={{
+                    padding: '8px 16px', borderRadius: '8px', background: '#7e22ce', color: '#fff', border: 'none',
+                    fontSize: '12px', fontWeight: 700, cursor: 'pointer', opacity: updatingProof ? 0.7 : 1
+                  }}
+                >
+                  {updatingProof ? 'Đang lưu...' : 'Lưu ảnh bằng chứng'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Preview Proof Modal */}
+      {previewImage && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0, 0, 0, 0.85)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px'
+          }}
+          onClick={() => setPreviewImage(null)}
+        >
+          <div
+            style={{ position: 'relative', maxWidth: '600px', width: '100%', textAlign: 'center' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setPreviewImage(null)}
+              style={{
+                position: 'absolute', top: '-40px', right: 0,
+                background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer', padding: '6px'
+              }}
+            >
+              <X size={28} />
+            </button>
+            <img
+              src={resolveImageUrl(previewImage)}
+              alt="Bằng chứng giao hàng"
+              style={{ maxHeight: '75vh', maxWidth: '100%', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            />
+            <div style={{ color: '#ffffff', fontSize: '13px', marginTop: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+              <span>📸 Bằng chứng giao hàng · Đơn #{delivery.orderCode || delivery.id}</span>
+              <a
+                href={resolveImageUrl(previewImage)}
+                target="_blank"
+                rel="noreferrer"
+                download={`POD_${delivery.orderCode || delivery.id}.jpg`}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '4px',
+                  color: '#38bdf8', textDecoration: 'none', fontWeight: 600, fontSize: '12px'
+                }}
+              >
+                <span>Mở ảnh gốc</span>
+                <ExternalLink size={12} />
+              </a>
+            </div>
           </div>
         </div>
       )}

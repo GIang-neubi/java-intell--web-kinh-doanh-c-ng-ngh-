@@ -241,7 +241,38 @@ public class DeliveryServiceTest {
         assertEquals(DeliveryStatus.DELIVERED, res.getStatus());
         assertEquals(OrderStatus.DELIVERED, order.getStatus());
         assertEquals("PAID", order.getPaymentStatus());
+        assertEquals("https://img.hg.com/proof.jpg", delivery.getProofImage());
+        assertNotNull(delivery.getDeliveredAt());
         verify(orderRepository).save(order);
+    }
+
+    @Test
+    @DisplayName("Shipper cập nhật ảnh bằng chứng giao hàng (POD) thành công")
+    void testUpdateProofImage_Success() {
+        delivery.setStatus(DeliveryStatus.DELIVERED);
+        delivery.setShipper(shipper);
+
+        when(deliveryRepository.findById(10L)).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.save(any(Delivery.class))).thenAnswer(i -> i.getArgument(0));
+
+        DeliveryResponse res = deliveryService.updateProofImage(10L, 2L, "https://cdn.hg.com/pod-12345.jpg");
+
+        assertEquals("https://cdn.hg.com/pod-12345.jpg", res.getProofImage());
+        assertEquals("https://cdn.hg.com/pod-12345.jpg", delivery.getProofImage());
+        assertTrue(delivery.getTrackings().stream().anyMatch(t -> t.getNote().contains("ảnh bằng chứng")));
+    }
+
+    @Test
+    @DisplayName("Shipper khác không thể cập nhật ảnh bằng chứng cho đơn của Shipper A")
+    void testUpdateProofImage_DifferentShipper_ThrowsBadRequest() {
+        delivery.setStatus(DeliveryStatus.DELIVERED);
+        delivery.setShipper(shipper); // id = 2L
+
+        when(deliveryRepository.findById(10L)).thenReturn(Optional.of(delivery));
+
+        assertThrows(BadRequestException.class, () -> {
+            deliveryService.updateProofImage(10L, 999L, "https://cdn.hg.com/hack.jpg");
+        });
     }
 
     @Test
