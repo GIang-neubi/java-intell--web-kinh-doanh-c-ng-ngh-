@@ -37,6 +37,9 @@ public class SePayWebhookController {
 
     private final OrderRepository orderRepository;
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private dh13c7.baitaplon.service.NotificationService notificationService;
+
     @Value("${sepay.webhook.secret:HG_SEPAY_SECRET_2026}")
     private String webhookSecret;
 
@@ -144,7 +147,29 @@ public class SePayWebhookController {
         if (matched.getStatus() == OrderStatus.PENDING) {
             matched.setStatus(OrderStatus.CONFIRMED);
         }
-        orderRepository.save(matched);
+        Order saved = orderRepository.save(matched);
+
+        if (notificationService != null) {
+            try {
+                if (saved.getUser() != null) {
+                    notificationService.sendNotification(
+                            saved.getUser().getId(),
+                            "Thanh toán thành công!",
+                            "Đơn hàng #" + saved.getOrderCode() + " đã được xác nhận thanh toán thành công qua chuyển khoản.",
+                            "PAYMENT",
+                            "/orders/" + saved.getId()
+                    );
+                }
+                notificationService.notifyAdmins(
+                        "Thanh toán thành công #" + saved.getOrderCode(),
+                        "Đơn hàng #" + saved.getOrderCode() + " đã nhận thanh toán " + received + " VND qua SePay.",
+                        "PAYMENT",
+                        "/admin/orders/" + saved.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Lỗi gửi thông báo thanh toán SePay: {}", e.getMessage());
+            }
+        }
 
         return ResponseEntity.ok(Map.of(
                 "success", true,

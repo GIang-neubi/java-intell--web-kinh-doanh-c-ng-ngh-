@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Package, Pencil, Trash2 } from 'lucide-react';
+import { ArrowLeft, Package, Pencil, Trash2, Star, CheckCircle } from 'lucide-react';
 import { deleteProduct, fetchProductById } from '../../../api/products';
-import { getErrorMessage } from '../../../api/client';
+import api, { getErrorMessage } from '../../../api/client';
 import { formatDate, formatPrice } from '../../../utils/helpers';
 import { resolveImageUrl } from '../../../utils/imageUrl';
 import AdminLoading from '../../../components/admin/AdminLoading';
@@ -19,19 +19,49 @@ export default function ProductDetail() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Reviews moderation state
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewStats, setReviewStats] = useState({ averageRating: 0, reviewCount: 0, distribution: {} });
+  const [reviewPage, setReviewPage] = useState(0);
+  const [reviewTotalPages, setReviewTotalPages] = useState(0);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
+  const [deletingReview, setDeletingReview] = useState(false);
+
+  const loadReviews = useCallback(async (page = 0) => {
+    if (!id) return;
+    setReviewsLoading(true);
+    try {
+      const [revRes, statsRes] = await Promise.all([
+        api.get(`/reviews/product/${id}?page=${page}&size=10`),
+        api.get(`/reviews/product/${id}/stats`),
+      ]);
+      if (revRes.data.success && revRes.data.data) {
+        setReviews(revRes.data.data.content || []);
+        setReviewPage(revRes.data.data.pageNo || 0);
+        setReviewTotalPages(revRes.data.data.totalPages || 0);
+      }
+      if (statsRes.data.success && statsRes.data.data) {
+        setReviewStats(statsRes.data.data);
+      }
+    } catch { /* ignore */ }
+    finally { setReviewsLoading(false); }
+  }, [id]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
       const data = await fetchProductById(id);
       setProduct(data);
+      await loadReviews(0);
     } catch (err) {
       setError(getErrorMessage(err, 'Không tải được chi tiết sản phẩm'));
       setProduct(null);
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, loadReviews]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -51,6 +81,24 @@ export default function ProductDetail() {
       setConfirmOpen(false);
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleDeleteReviewAdmin = async () => {
+    if (!reviewToDelete) return;
+    setDeletingReview(true);
+    try {
+      const { data } = await api.delete(`/reviews/${reviewToDelete.id}/admin`);
+      if (data.success) {
+        setToast('Đã xóa đánh giá thành công.');
+        setReviewToDelete(null);
+        await loadReviews(reviewPage);
+      }
+    } catch (err) {
+      setError(getErrorMessage(err, 'Xóa đánh giá thất bại'));
+      setReviewToDelete(null);
+    } finally {
+      setDeletingReview(false);
     }
   };
 
@@ -125,6 +173,111 @@ export default function ProductDetail() {
         </div>
       </div>
 
+      {/* Customer Reviews Moderation */}
+      <div className="card" style={{ marginTop: 24, padding: 24 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Đánh giá của khách hàng</h3>
+            <span className="badge badge-primary">{reviewStats.reviewCount || 0} đánh giá</span>
+          </div>
+          {reviewStats.reviewCount > 0 && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 15, fontWeight: 700 }}>
+              <Star size={18} fill="#f59e0b" color="#f59e0b" />
+              <span>{reviewStats.averageRating ? reviewStats.averageRating.toFixed(1) : '0.0'} / 5</span>
+            </div>
+          )}
+        </div>
+
+        {reviewsLoading ? (
+          <AdminLoading label="Đang tải đánh giá..." />
+        ) : reviews.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-muted)' }}>
+            Chưa có đánh giá nào cho sản phẩm này.
+          </div>
+        ) : (
+          <div>
+            <div className="table-responsive">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Khách hàng</th>
+                    <th>Xác thực</th>
+                    <th>Số sao</th>
+                    <th>Nội dung nhận xét</th>
+                    <th>Thời gian</th>
+                    <th style={{ textAlign: 'right' }}>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reviews.map((r) => (
+                    <tr key={r.id}>
+                      <td style={{ fontWeight: 600 }}>{r.fullName || r.username}</td>
+                      <td>
+                        {r.verified ? (
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#15803d', fontSize: 12, fontWeight: 600 }}>
+                            <CheckCircle size={13} /> Đã mua
+                          </span>
+                        ) : (
+                          <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Chưa mua</span>
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} size={13} fill={s <= r.rating ? '#f59e0b' : 'none'} color={s <= r.rating ? '#f59e0b' : '#d1d5db'} />
+                          ))}
+                        </div>
+                      </td>
+                      <td style={{ maxWidth: 300, fontSize: 13, color: 'var(--text-secondary)' }}>
+                        {r.comment || <em style={{ color: 'var(--text-muted)' }}>Không có nhận xét</em>}
+                      </td>
+                      <td style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                        {r.createdAt ? formatDate(r.createdAt) : '—'}
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => setReviewToDelete(r)}
+                          title="Xóa đánh giá này"
+                          style={{ padding: '4px 8px', fontSize: 12, display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                        >
+                          <Trash2 size={13} /> Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {reviewTotalPages > 1 && (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 10, marginTop: 16 }}>
+                <button
+                  type="button"
+                  disabled={reviewPage === 0}
+                  onClick={() => loadReviews(reviewPage - 1)}
+                  className="btn btn-outline btn-sm"
+                >
+                  Trang trước
+                </button>
+                <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+                  {reviewPage + 1} / {reviewTotalPages}
+                </span>
+                <button
+                  type="button"
+                  disabled={reviewPage >= reviewTotalPages - 1}
+                  onClick={() => loadReviews(reviewPage + 1)}
+                  className="btn btn-outline btn-sm"
+                >
+                  Trang sau
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
       <ConfirmDialog
         open={confirmOpen}
         title="Xóa sản phẩm?"
@@ -133,6 +286,16 @@ export default function ProductDetail() {
         loading={deleting}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={handleDelete}
+      />
+
+      <ConfirmDialog
+        open={Boolean(reviewToDelete)}
+        title="Xóa đánh giá này?"
+        message={`Bạn có chắc muốn xóa đánh giá của khách hàng "${reviewToDelete?.fullName || reviewToDelete?.username || ''}" (${reviewToDelete?.rating || 0} sao) không?`}
+        confirmLabel="Xóa đánh giá"
+        loading={deletingReview}
+        onCancel={() => setReviewToDelete(null)}
+        onConfirm={handleDeleteReviewAdmin}
       />
     </div>
   );

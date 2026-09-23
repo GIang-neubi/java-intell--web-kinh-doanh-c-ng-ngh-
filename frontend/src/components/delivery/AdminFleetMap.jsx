@@ -7,6 +7,7 @@ import {
   Search, Eye, Maximize2, AlertCircle, Clock, ExternalLink, ChevronRight
 } from 'lucide-react';
 import { deliveryStatusLabel, deliveryStatusColor, shippingMethodLabel, formatPrice } from '../../utils/helpers';
+import { setupMapTiles } from '../../utils/mapTiles';
 
 // Helper: Marker Kho H&G
 function createWarehousePin(name) {
@@ -135,14 +136,7 @@ export default function AdminFleetMap({
       attributionControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
-
-    L.control.attribution({ position: 'bottomright', prefix: false })
-      .addAttribution('© OpenStreetMap')
-      .addTo(map);
+    setupMapTiles(map);
 
     const markersGroup = L.featureGroup().addTo(map);
     markersGroupRef.current = markersGroup;

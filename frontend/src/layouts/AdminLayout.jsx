@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Package, FolderTree, Users, ShoppingBag,
   Ticket, BarChart3, LogOut, Eye, Menu, X, ChevronRight, Tag, Inbox,
-  Bell, Settings, AlertTriangle, CheckCircle, Sparkles, MessageSquare,
-  Truck, UserCheck, Building2
+  Settings, MessageSquare, Truck, UserCheck, Building2
 } from 'lucide-react';
 import { useAuthStore } from '../store';
 import { fetchAdminUnreadCount } from '../api/chat';
+import NotificationBell from '../components/NotificationBell';
 
 const NAV = [
   { to: '/admin', end: true, icon: LayoutDashboard, label: 'Dashboard' },
@@ -97,7 +97,6 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [unreadChatCount, setUnreadChatCount] = useState(0);
   const title = resolveTitle(location.pathname);
@@ -207,61 +206,7 @@ export default function AdminLayout() {
           </div>
 
           <div className="hg-admin-header-right">
-            <button
-              type="button"
-              className="hg-admin-header-btn"
-              onClick={() => setNotificationsOpen(!notificationsOpen)}
-              aria-label="Thông báo"
-              aria-expanded={notificationsOpen}
-            >
-              <Bell size={20} />
-              <span className="hg-admin-badge">3</span>
-            </button>
-
-            <div className={`hg-admin-dropdown ${notificationsOpen ? 'open' : ''}`}>
-              <div className="hg-admin-dropdown-arrow" />
-              <div className="hg-admin-dropdown-panel">
-                <div className="hg-admin-dropdown-header">
-                  <h3>Thông báo</h3>
-                  <span className="text-muted text-sm">3 mới</span>
-                </div>
-                <div className="hg-admin-notification-list">
-                  <div className="hg-admin-notification-item unread">
-                    <div className="hg-admin-notification-icon">
-                      <Package size={16} />
-                    </div>
-                    <div className="hg-admin-notification-content">
-                      <div className="hg-admin-notification-title">Sản phẩm mới cần duyệt</div>
-                      <div className="hg-admin-notification-desc">Có 2 sản phẩm chờ phê duyệt</div>
-                      <div className="hg-admin-notification-time">5 phút trước</div>
-                    </div>
-                  </div>
-                  <div className="hg-admin-notification-item unread">
-                    <div className="hg-admin-notification-icon warning">
-                      <AlertTriangle size={16} />
-                    </div>
-                    <div className="hg-admin-notification-content">
-                      <div className="hg-admin-notification-title">Tồn kho thấp</div>
-                      <div className="hg-admin-notification-desc">5 sản phẩm sắp hết hàng</div>
-                      <div className="hg-admin-notification-time">15 phút trước</div>
-                    </div>
-                  </div>
-                  <div className="hg-admin-notification-item">
-                    <div className="hg-admin-notification-icon success">
-                      <CheckCircle size={16} />
-                    </div>
-                    <div className="hg-admin-notification-content">
-                      <div className="hg-admin-notification-title">Đơn hàng #DH1234 đã giao</div>
-                      <div className="hg-admin-notification-desc">Khách hàng xác nhận nhận hàng</div>
-                      <div className="hg-admin-notification-time">1 giờ trước</div>
-                    </div>
-                  </div>
-                </div>
-                <Link to="/admin/reports" className="hg-admin-dropdown-footer">
-                  Xem tất cả thông báo
-                </Link>
-              </div>
-            </div>
+            <NotificationBell isAdmin />
 
             <div className="hg-admin-user-menu">
               <button

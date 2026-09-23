@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, Search, Navigation, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { setupMapTiles, getApproximateCoordsFromAddress } from '../../utils/mapTiles';
 
 // Tạo custom pin marker đẹp mắt, hiện đại, không phụ thuộc file ảnh tĩnh
 function createWarehousePinIcon(label = 'Kho H&G') {
@@ -95,15 +96,7 @@ export default function WarehouseMapPicker({
       attributionControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
-
-    // Thêm attribution nhỏ gọn ở góc dưới
-    L.control.attribution({ position: 'bottomright', prefix: false })
-      .addAttribution('© OpenStreetMap')
-      .addTo(map);
+    setupMapTiles(map);
 
     // Nếu đã có tọa độ thì vẽ marker
     if (hasCoords) {
@@ -260,10 +253,35 @@ export default function WarehouseMapPicker({
         });
       }
     } catch (err) {
-      setGeocodeMsg({
-        type: 'warning',
-        text: 'Không kết nối được dịch vụ tìm kiếm địa chỉ. Bạn có thể nhấp trực tiếp lên bản đồ để chọn vị trí.',
-      });
+      const approx = getApproximateCoordsFromAddress(query);
+      if (approx && mapInstanceRef.current) {
+        mapInstanceRef.current.flyTo([approx.lat, approx.lng], 14, { duration: 1.2 });
+        if (markerRef.current) {
+          markerRef.current.setLatLng([approx.lat, approx.lng]);
+        } else {
+          const marker = L.marker([approx.lat, approx.lng], {
+            draggable: true,
+            icon: createWarehousePinIcon(name || 'Kho H&G'),
+          }).addTo(mapInstanceRef.current);
+          marker.on('dragend', () => {
+            const pos = marker.getLatLng();
+            onLocationChange(parseFloat(pos.lat.toFixed(6)), parseFloat(pos.lng.toFixed(6)));
+            setIsPinned(true);
+          });
+          markerRef.current = marker;
+        }
+        onLocationChange(approx.lat, approx.lng);
+        setIsPinned(true);
+        setGeocodeMsg({
+          type: 'success',
+          text: 'Đã định vị theo khu vực tỉnh/thành phố. Bạn có thể kéo ghim đến đúng vị trí kho hàng.',
+        });
+      } else {
+        setGeocodeMsg({
+          type: 'warning',
+          text: 'Không kết nối được dịch vụ tìm kiếm địa chỉ. Bạn có thể nhấp trực tiếp lên bản đồ để chọn vị trí.',
+        });
+      }
     } finally {
       setGeocoding(false);
     }

@@ -42,6 +42,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final ProductRepository productRepository;
     private final WarehouseRepository warehouseRepository;
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private dh13c7.baitaplon.service.NotificationService notificationService;
+
     @Override
     @Transactional
     public Delivery createDeliveryForOrder(Order order, ShippingMethod method, BigDecimal fee) {
@@ -248,8 +251,23 @@ public class DeliveryServiceImpl implements DeliveryService {
             noteText += " (Ghi chú: " + note.trim() + ")";
         }
         delivery.addTracking(DeliveryStatus.ASSIGNED, noteText, null, null);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
-        return mapToResponse(deliveryRepository.save(delivery));
+        if (notificationService != null) {
+            try {
+                notificationService.sendNotification(
+                        shipper.getId(),
+                        "Phân công đơn hàng mới",
+                        "Bạn được phân công giao đơn hàng #" + order.getOrderCode(),
+                        "DELIVERY",
+                        "/shipper/deliveries/" + savedDelivery.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Lỗi gửi thông báo phân công shipper: {}", e.getMessage());
+            }
+        }
+
+        return mapToResponse(savedDelivery);
     }
 
     @Override
@@ -318,8 +336,23 @@ public class DeliveryServiceImpl implements DeliveryService {
         orderRepository.save(order);
 
         delivery.addTracking(DeliveryStatus.IN_TRANSIT, "Shipper đang trên đường di chuyển giao tới địa chỉ của bạn.", lat, lng);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
-        return mapToResponse(deliveryRepository.save(delivery));
+        if (notificationService != null && order.getUser() != null) {
+            try {
+                notificationService.sendNotification(
+                        order.getUser().getId(),
+                        "Kiện hàng đang được giao",
+                        "Tài xế đang trên đường giao đơn hàng #" + order.getOrderCode() + " đến bạn.",
+                        "DELIVERY",
+                        "/orders/" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Lỗi gửi thông báo đơn hàng đang giao: {}", e.getMessage());
+            }
+        }
+
+        return mapToResponse(savedDelivery);
     }
 
     @Override
@@ -404,8 +437,23 @@ public class DeliveryServiceImpl implements DeliveryService {
             note += " Ghi chú: " + request.getNote().trim();
         }
         delivery.addTracking(DeliveryStatus.DELIVERED, note, null, null);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
-        return mapToResponse(deliveryRepository.save(delivery));
+        if (notificationService != null && order.getUser() != null) {
+            try {
+                notificationService.sendNotification(
+                        order.getUser().getId(),
+                        "Giao hàng thành công!",
+                        "Đơn hàng #" + order.getOrderCode() + " đã được giao thành công.",
+                        "DELIVERY",
+                        "/orders/" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Lỗi gửi thông báo giao hàng thành công: {}", e.getMessage());
+            }
+        }
+
+        return mapToResponse(savedDelivery);
     }
 
     @Override
@@ -435,8 +483,31 @@ public class DeliveryServiceImpl implements DeliveryService {
             note += " (" + request.getNote().trim() + ")";
         }
         delivery.addTracking(DeliveryStatus.DELIVERY_FAILED, note, null, null);
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
-        return mapToResponse(deliveryRepository.save(delivery));
+        if (notificationService != null) {
+            try {
+                if (delivery.getOrder().getUser() != null) {
+                    notificationService.sendNotification(
+                            delivery.getOrder().getUser().getId(),
+                            "Giao hàng không thành công",
+                            "Đơn hàng #" + delivery.getOrder().getOrderCode() + " giao chưa thành công: " + request.getReason().trim(),
+                            "DELIVERY",
+                            "/orders/" + delivery.getOrder().getId()
+                    );
+                }
+                notificationService.notifyAdmins(
+                        "Giao hàng thất bại #" + delivery.getOrder().getOrderCode(),
+                        "Đơn hàng #" + delivery.getOrder().getOrderCode() + " giao thất bại: " + request.getReason().trim(),
+                        "DELIVERY",
+                        "/admin/deliveries/" + delivery.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Lỗi gửi thông báo giao hàng thất bại: {}", e.getMessage());
+            }
+        }
+
+        return mapToResponse(savedDelivery);
     }
 
     @Override

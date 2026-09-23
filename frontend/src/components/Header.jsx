@@ -1,8 +1,9 @@
-import { ShoppingCart, User, Search, LogOut, Settings, Package, Menu, X, ChevronDown, Truck } from 'lucide-react';
+import { ShoppingCart, User, Search, LogOut, Settings, Package, Menu, X, ChevronDown, Truck, Bell } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useCartStore, useAuthStore } from '../store';
 import { fetchCategories } from '../api/categories';
+import NotificationBell from './NotificationBell';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -151,6 +152,8 @@ export default function Header() {
             {totalItems > 0 && <span className="hg-action-badge">{totalItems}</span>}
           </Link>
 
+          {isAuthenticated && <NotificationBell />}
+
           {isAuthenticated ? (
             <div ref={menuRef} className="hg-user-menu">
               <button
@@ -170,6 +173,9 @@ export default function Header() {
                   </div>
                   <Link to="/account" onClick={() => setUserMenuOpen(false)}>
                     <User size={16} strokeWidth={1.5} /> Tài khoản
+                  </Link>
+                  <Link to="/account/notifications" onClick={() => setUserMenuOpen(false)}>
+                    <Bell size={16} strokeWidth={1.5} /> Thông báo
                   </Link>
                   <Link to="/orders" onClick={() => setUserMenuOpen(false)}>
                     <Package size={16} strokeWidth={1.5} /> Đơn hàng
@@ -223,6 +229,7 @@ export default function Header() {
             {isAuthenticated && (
               <>
                 <Link to="/account" onClick={() => setMobileMenuOpen(false)}>Tài khoản</Link>
+                <Link to="/account/notifications" onClick={() => setMobileMenuOpen(false)}>Thông báo</Link>
                 <Link to="/orders" onClick={() => setMobileMenuOpen(false)}>Đơn hàng</Link>
                 {(user?.role === 'ROLE_SHIPPER' || user?.role === 'SHIPPER' || user?.role === 'ROLE_ADMIN' || user?.role === 'ADMIN') && (
                   <Link to="/shipper" onClick={() => setMobileMenuOpen(false)}>Cổng Shipper</Link>

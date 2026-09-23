@@ -1,14 +1,32 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserCheck, Phone, Mail, Package, CheckCircle2, ArrowRight, RefreshCw, Users } from 'lucide-react';
-import { fetchShippers } from '../../../api/delivery';
+import {
+  UserCheck, Phone, Mail, Package, CheckCircle2, ArrowRight,
+  RefreshCw, Users, MapPin, Clock, Navigation, ShieldCheck
+} from 'lucide-react';
+import { fetchShippers, fetchAdminDeliveries } from '../../../api/delivery';
 import { getErrorMessage } from '../../../api/client';
+import { formatDate, deliveryStatusLabel, deliveryStatusColor } from '../../../utils/helpers';
 import AdminLoading from '../../../components/admin/AdminLoading';
 import AdminError from '../../../components/admin/AdminError';
 import AdminEmpty from '../../../components/admin/AdminEmpty';
 
+function formatRelativeTime(dateString) {
+  if (!dateString) return 'Vừa xong';
+  const now = Date.now();
+  const past = new Date(dateString).getTime();
+  if (isNaN(past)) return 'Vừa xong';
+  const diffSec = Math.max(0, Math.floor((now - past) / 1000));
+  if (diffSec < 60) return `${diffSec} giây trước`;
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin} phút trước`;
+  const diffHour = Math.floor(diffMin / 60);
+  return `${diffHour} giờ trước`;
+}
+
 export default function AdminShipperList() {
   const [shippers, setShippers] = useState([]);
+  const [activeDeliveryMap, setActiveDeliveryMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -18,6 +36,30 @@ export default function AdminShipperList() {
     try {
       const data = await fetchShippers();
       setShippers(data || []);
+
+      // Phase 17: Load active delivery for shippers that have active orders
+      const activeShippers = (data || []).filter((s) => (s.activeDeliveryCount || 0) > 0);
+      const deliveryMap = {};
+
+      await Promise.all(
+        activeShippers.map(async (s) => {
+          try {
+            const res = await fetchAdminDeliveries({ shipperId: s.id, size: 5 });
+            const list = res.content || [];
+            // Find current active delivery (IN_TRANSIT, ARRIVED, PICKED_UP, SHIPPER_ACCEPTED, ASSIGNED)
+            const ongoing = list.find((d) =>
+              ['IN_TRANSIT', 'ARRIVED', 'PICKED_UP', 'SHIPPER_ACCEPTED', 'ASSIGNED'].includes(d.status)
+            ) || list[0];
+            if (ongoing) {
+              deliveryMap[s.id] = ongoing;
+            }
+          } catch {
+            // ignore individual shipper delivery fetch error
+          }
+        })
+      );
+
+      setActiveDeliveryMap(deliveryMap);
     } catch (err) {
       setError(getErrorMessage(err, 'Không tải được danh sách shipper'));
     } finally {
@@ -38,10 +80,10 @@ export default function AdminShipperList() {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.02em' }}>
-            Đội ngũ Nhân viên Giao hàng (Shipper)
+            Đội ngũ Nhân viên Giao hàng (Shipper) & Định vị GPS
           </h1>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: '4px 0 0' }}>
-            Theo dõi khối lượng phân phối thực tế và hiệu suất làm việc của từng nhân sự
+            Theo dõi phân phối đơn hàng, tọa độ GPS thực tế và hiệu suất giao hàng của nhân viên
           </p>
         </div>
         <button
@@ -61,7 +103,7 @@ export default function AdminShipperList() {
             fontWeight: 600,
             cursor: 'pointer',
             transition: 'all 0.2s ease',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+            boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
           }}
           title="Tải lại danh sách"
         >
@@ -135,6 +177,10 @@ export default function AdminShipperList() {
         <div className="hg-shipper-grid">
           {shippers.map((s) => {
             const initialLetter = (s.fullName || s.username || 'S').trim().charAt(0).toUpperCase();
+            const activeDelivery = activeDeliveryMap[s.id];
+            const hasActiveDelivery = Boolean(activeDelivery && (s.activeDeliveryCount || 0) > 0);
+            const statusStyle = activeDelivery ? (deliveryStatusColor[activeDelivery.status] || { bg: '#eff6ff', text: '#1d4ed8' }) : null;
+
             return (
               <div key={s.id} className="hg-shipper-profile-card">
                 {/* Header info */}
@@ -159,7 +205,7 @@ export default function AdminShipperList() {
                       fontWeight: 700,
                       background: s.enabled ? '#ecfdf5' : '#f1f5f9',
                       color: s.enabled ? '#047857' : '#64748b',
-                      border: `1px solid ${s.enabled ? '#a7f3d0' : '#e2e8f0'}`
+                      border: `1px solid ${s.enabled ? '#a7f3d0' : '#e2e8f0'}`,
                     }}
                   >
                     {s.enabled ? 'Hoạt động' : 'Tạm khóa'}
@@ -202,6 +248,72 @@ export default function AdminShipperList() {
                       {s.completedDeliveryCount || 0}
                     </span>
                   </div>
+                </div>
+
+                {/* PHASE 17 & 19: SHIPPER LOCATION & ACTIVE DELIVERY MANAGEMENT */}
+                <div
+                  style={{
+                    background: hasActiveDelivery ? '#f0f9ff' : '#f8fafc',
+                    border: `1px solid ${hasActiveDelivery ? '#bae6fd' : '#e2e8f0'}`,
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    margin: '12px 0',
+                    fontSize: '12px',
+                  }}
+                >
+                  {hasActiveDelivery ? (
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: '10px', fontWeight: 800, textTransform: 'uppercase', color: '#0284c7' }}>
+                          ĐƠN HÀNG ĐANG GIAO
+                        </span>
+                        <span
+                          style={{
+                            fontSize: '10px',
+                            fontWeight: 700,
+                            padding: '2px 8px',
+                            borderRadius: 999,
+                            backgroundColor: statusStyle.bg,
+                            color: statusStyle.text,
+                          }}
+                        >
+                          {deliveryStatusLabel[activeDelivery.status] || activeDelivery.status}
+                        </span>
+                      </div>
+
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: 13 }}>
+                        #{activeDelivery.orderCode || `DL${activeDelivery.id}`}
+                      </div>
+
+                      {/* Latest location */}
+                      {typeof activeDelivery.currentLatitude === 'number' && typeof activeDelivery.currentLongitude === 'number' ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#0369a1', marginTop: 4, fontWeight: 600 }}>
+                          <MapPin size={12} style={{ color: '#0284c7', flexShrink: 0 }} />
+                          <span>
+                            {activeDelivery.currentLatitude.toFixed(4)}, {activeDelivery.currentLongitude.toFixed(4)}
+                          </span>
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
+                          Đang kết nối GPS thiết bị...
+                        </div>
+                      )}
+
+                      {/* Last update ticker */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-muted)', marginTop: 4, fontSize: 11 }}>
+                        <Clock size={11} />
+                        <span>Cập nhật: {formatRelativeTime(activeDelivery.lastLocationUpdate)}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)' }}>
+                      <ShieldCheck size={16} style={{ color: '#94a3b8', flexShrink: 0 }} />
+                      <div>
+                        <div style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Chưa có đơn đang giao</div>
+                        <div style={{ fontSize: 11 }}>GPS ở chế độ chờ — bảo mật vị trí khi không có đơn</div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Footer Action */}

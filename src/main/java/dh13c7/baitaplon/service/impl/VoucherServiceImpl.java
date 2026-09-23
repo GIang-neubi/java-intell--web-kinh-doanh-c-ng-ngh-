@@ -1,21 +1,25 @@
 package dh13c7.baitaplon.service.impl;
 
+import dh13c7.baitaplon.dto.CustomerVoucherResponse;
 import dh13c7.baitaplon.dto.PageResponse;
 import dh13c7.baitaplon.dto.VoucherDTO;
 import dh13c7.baitaplon.exception.BadRequestException;
 import dh13c7.baitaplon.exception.ResourceNotFoundException;
 import dh13c7.baitaplon.model.DiscountType;
 import dh13c7.baitaplon.model.Voucher;
+import dh13c7.baitaplon.repository.OrderRepository;
 import dh13c7.baitaplon.repository.VoucherRepository;
 import dh13c7.baitaplon.service.VoucherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
 public class VoucherServiceImpl implements VoucherService {
 
     private final VoucherRepository voucherRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -94,6 +99,79 @@ public class VoucherServiceImpl implements VoucherService {
         if (orderAmount != null && orderAmount.compareTo(voucher.getMinOrderValue()) < 0)
             throw new BadRequestException("Đơn hàng chưa đạt giá trị tối thiểu để áp dụng mã này");
         return mapToDTO(voucher);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CustomerVoucherResponse> getMyVouchers(Long userId, String statusFilter) {
+        List<Voucher> vouchers = voucherRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        Set<String> usedCodes = (userId != null)
+                ? orderRepository.findVoucherCodesUsedByUserId(userId).stream()
+                    .filter(Objects::nonNull)
+                    .map(String::toUpperCase)
+                    .collect(Collectors.toSet())
+                : Collections.emptySet();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        List<CustomerVoucherResponse> result = vouchers.stream()
+                .map(v -> mapToCustomerResponse(v, usedCodes, now))
+                .collect(Collectors.toList());
+
+        if (statusFilter != null && !statusFilter.isBlank() && !"ALL".equalsIgnoreCase(statusFilter.trim())) {
+            String filter = statusFilter.trim().toUpperCase();
+            result = result.stream()
+                    .filter(res -> res.getStatus().equalsIgnoreCase(filter))
+                    .collect(Collectors.toList());
+        }
+
+        return result;
+    }
+
+    private CustomerVoucherResponse mapToCustomerResponse(Voucher v, Set<String> usedCodes, LocalDateTime now) {
+        boolean usedByUser = usedCodes.contains(v.getCode().toUpperCase());
+        String status;
+        String statusLabel;
+        boolean usable = false;
+
+        if (usedByUser) {
+            status = "USED";
+            statusLabel = "Đã sử dụng";
+        } else if (!Boolean.TRUE.equals(v.getActive())) {
+            status = "INACTIVE";
+            statusLabel = "Tạm dừng";
+        } else if (now.isBefore(v.getStartDate())) {
+            status = "UPCOMING";
+            statusLabel = "Sắp diễn ra";
+        } else if (now.isAfter(v.getEndDate())) {
+            status = "EXPIRED";
+            statusLabel = "Đã hết hạn";
+        } else if (v.getQuantity() > 0 && v.getUsedQuantity() >= v.getQuantity()) {
+            status = "OUT_OF_STOCK";
+            statusLabel = "Đã hết lượt";
+        } else {
+            status = "AVAILABLE";
+            statusLabel = "Khả dụng";
+            usable = true;
+        }
+
+        return CustomerVoucherResponse.builder()
+                .id(v.getId())
+                .code(v.getCode())
+                .description(v.getDescription())
+                .discountType(v.getDiscountType())
+                .discountValue(v.getDiscountValue())
+                .minOrderValue(v.getMinOrderValue())
+                .maxDiscount(v.getMaxDiscount())
+                .quantity(v.getQuantity())
+                .usedQuantity(v.getUsedQuantity())
+                .startDate(v.getStartDate())
+                .endDate(v.getEndDate())
+                .status(status)
+                .statusLabel(statusLabel)
+                .used(usedByUser)
+                .usable(usable)
+                .build();
     }
 
     // ── Helpers ──

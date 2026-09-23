@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { User, Package, Heart, LogOut, Lock, LayoutDashboard, Menu, X, ShoppingCart } from 'lucide-react';
+import { User, Package, Heart, LogOut, Lock, LayoutDashboard, Menu, X, ShoppingCart, MapPin, Bell, Star, Ticket, ShieldCheck } from 'lucide-react';
 import { useAuthStore } from '../store';
 
 export default function AccountLayout({ children, activeTab = 'profile' }) {
@@ -15,18 +15,28 @@ export default function AccountLayout({ children, activeTab = 'profile' }) {
   };
 
   const menuItems = [
-    { id: 'overview',  label: 'Tổng quan',  icon: LayoutDashboard, path: '/account' },
-    { id: 'profile',   label: 'Hồ sơ',      icon: User,            path: '/profile' },
-    { id: 'password',  label: 'Mật khẩu',   icon: Lock,            path: '/profile?tab=password' },
-    { id: 'orders',    label: 'Đơn hàng',   icon: Package,         path: '/orders' },
-    { id: 'wishlist',  label: 'Yêu thích',  icon: Heart,           path: '/wishlist' },
-    { id: 'cart',      label: 'Giỏ hàng',   icon: ShoppingCart,    path: '/cart' },
+    { id: 'overview',      label: 'Tổng quan',  icon: LayoutDashboard, path: '/account' },
+    { id: 'profile',       label: 'Hồ sơ',      icon: User,            path: '/profile' },
+    { id: 'addresses',     label: 'Sổ địa chỉ', icon: MapPin,          path: '/account/addresses' },
+    { id: 'notifications', label: 'Thông báo',  icon: Bell,            path: '/account/notifications' },
+    { id: 'vouchers',      label: 'Mã giảm giá', icon: Ticket,          path: '/account/vouchers' },
+    { id: 'warranty',      label: 'Bảo hành',   icon: ShieldCheck,     path: '/account/warranty' },
+    { id: 'reviews',       label: 'Đánh giá',   icon: Star,            path: '/account/reviews' },
+    { id: 'password',      label: 'Mật khẩu',   icon: Lock,            path: '/profile?tab=password' },
+    { id: 'orders',        label: 'Đơn hàng',   icon: Package,         path: '/orders' },
+    { id: 'wishlist',      label: 'Yêu thích',  icon: Heart,           path: '/wishlist' },
+    { id: 'cart',          label: 'Giỏ hàng',   icon: ShoppingCart,    path: '/cart' },
   ];
 
   const isActive = (id) => {
     if (id === activeTab) return true;
     if (id === 'overview' && location.pathname === '/account') return true;
     if (id === 'profile' && location.pathname === '/profile') return true;
+    if (id === 'addresses' && (location.pathname === '/account/addresses' || location.pathname.startsWith('/account/addresses'))) return true;
+    if (id === 'notifications' && (location.pathname === '/account/notifications' || location.pathname.startsWith('/account/notifications'))) return true;
+    if (id === 'vouchers' && (location.pathname === '/account/vouchers' || location.pathname.startsWith('/account/vouchers'))) return true;
+    if (id === 'warranty' && (location.pathname === '/account/warranty' || location.pathname.startsWith('/account/warranty'))) return true;
+    if (id === 'reviews' && (location.pathname === '/account/reviews' || location.pathname.startsWith('/account/reviews'))) return true;
     if (id === 'password' && location.pathname === '/profile' && location.search === '?tab=password') return true;
     if (id === 'orders' && (location.pathname === '/orders' || location.pathname.startsWith('/orders/'))) return true;
     if (id === 'wishlist' && location.pathname === '/wishlist') return true;

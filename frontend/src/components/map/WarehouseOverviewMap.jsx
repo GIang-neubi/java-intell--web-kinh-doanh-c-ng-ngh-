@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Building2, MapPin, Phone, ExternalLink, Pencil, Eye, CheckCircle2, AlertCircle } from 'lucide-react';
+import { setupMapTiles } from '../../utils/mapTiles';
 
 function createWarehouseMarkerIcon(status = 'ACTIVE') {
   const isActive = status === 'ACTIVE';
@@ -67,14 +68,7 @@ export default function WarehouseOverviewMap({ warehouses = [], loading = false 
       attributionControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
-
-    L.control.attribution({ position: 'bottomright', prefix: false })
-      .addAttribution('© OpenStreetMap')
-      .addTo(map);
+    setupMapTiles(map);
 
     const markersGroup = L.featureGroup().addTo(map);
     markersLayerRef.current = markersGroup;

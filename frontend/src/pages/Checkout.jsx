@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, CreditCard, CheckCircle, Tag, X, Clock, Copy, CheckCircle2, ChevronRight, Truck, Zap } from 'lucide-react';
+import {
+  MapPin, CreditCard, CheckCircle, Tag, X, Clock, Copy, CheckCircle2,
+  ChevronRight, Truck, Zap, BookOpen, Plus, Star, Ticket, ShoppingBag
+} from 'lucide-react';
 import { useCartStore, useAuthStore } from '../store';
-import { formatPrice } from '../utils/helpers';
+import { formatPrice, formatDate } from '../utils/helpers';
 import api, { getErrorMessage } from '../api/client';
 import { resolveImageUrl } from '../utils/imageUrl';
 import { getShippingMethods, checkoutPreview } from '../api/shipping';
+import { fetchAddresses, createAddress } from '../api/addresses';
 
 // ─── Thông tin ngân hàng ───────────────────────────────────────────────────
 const BANK_INFO = {
@@ -27,7 +31,7 @@ function buildQrUrl(amount, content) {
 
 export default function Checkout() {
   const { clearCart } = useCartStore();
-  const { user }             = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   const navigate             = useNavigate();
 
   const [payment, setPayment] = useState('COD');
@@ -50,6 +54,8 @@ export default function Checkout() {
   const [appliedVoucherCode, setAppliedVoucherCode] = useState('');
   const [voucherError, setVoucherError] = useState('');
   const [voucherLoading, setVoucherLoading] = useState(false);
+  const [availableVouchers, setAvailableVouchers] = useState([]);
+  const [voucherModalOpen, setVoucherModalOpen] = useState(false);
 
   // ── Vận chuyển (Shipping) ──
   const [shippingMethod, setShippingMethod] = useState('STANDARD');
@@ -65,8 +71,13 @@ export default function Checkout() {
 
   const displayItems = useCartStore((s) => s.items);
 
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddressId, setSelectedAddressId] = useState(null);
+  const [showAddressDrawer, setShowAddressDrawer] = useState(false);
+  const [saveToAddresses, setSaveToAddresses] = useState(false);
+
   // Gọi API xem trước chi phí từ Backend
-  const requestCheckoutPreview = async (method = shippingMethod, vCode = appliedVoucherCode) => {
+  const requestCheckoutPreview = async (method = shippingMethod, vCode = appliedVoucherCode, addr = form.address) => {
     const currentItems = useCartStore.getState().items;
     if (!currentItems || currentItems.length === 0) return;
 
@@ -82,7 +93,7 @@ export default function Checkout() {
       const data = await checkoutPreview({
         shippingMethod: method,
         voucherCode: vCode ? vCode.trim() : null,
-        shippingAddress: form.address.trim() || null,
+        shippingAddress: (addr || '').trim() || null,
       });
 
       setPreviewData(data);
@@ -98,6 +109,42 @@ export default function Checkout() {
     } finally {
       setPreviewLoading(false);
     }
+  };
+
+  // Tải danh sách địa chỉ đã lưu của khách hàng
+  useEffect(() => {
+    fetchAddresses()
+      .then((addrs) => {
+        if (addrs && addrs.length > 0) {
+          setSavedAddresses(addrs);
+          const defaultAddr = addrs.find((a) => a.isDefault) || addrs[0];
+          if (defaultAddr) {
+            setSelectedAddressId(defaultAddr.id);
+            const initialAddr = defaultAddr.fullAddress || defaultAddr.detailAddress || '';
+            setForm((prev) => ({
+              ...prev,
+              fullName: prev.fullName || defaultAddr.recipientName || '',
+              phone: prev.phone || defaultAddr.phone || '',
+              address: prev.address || initialAddr,
+            }));
+            requestCheckoutPreview(shippingMethod, appliedVoucherCode, initialAddr);
+          }
+        }
+      })
+      .catch((err) => console.warn('Không tải được sổ địa chỉ:', err));
+  }, []);
+
+  const handleSelectAddress = (addr) => {
+    setSelectedAddressId(addr.id);
+    const addrText = addr.fullAddress || addr.detailAddress || '';
+    setForm((prev) => ({
+      ...prev,
+      fullName: addr.recipientName || prev.fullName,
+      phone: addr.phone || prev.phone,
+      address: addrText,
+    }));
+    setShowAddressDrawer(false);
+    requestCheckoutPreview(shippingMethod, appliedVoucherCode, addrText);
   };
 
   useEffect(() => {
@@ -132,6 +179,18 @@ export default function Checkout() {
 
   const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      api.get('/vouchers/available')
+        .then(({ data }) => {
+          if (data.success && Array.isArray(data.data)) {
+            setAvailableVouchers(data.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [isAuthenticated]);
+
   // ── Áp dụng voucher qua Backend ──
   const applyVoucher = async () => {
     const code = voucherInput.trim().toUpperCase();
@@ -144,6 +203,23 @@ export default function Checkout() {
       setVoucherError(getErrorMessage(err, 'Mã giảm giá không hợp lệ'));
     } finally {
       setVoucherLoading(false); 
+    }
+  };
+
+  const applyVoucherCode = async (code) => {
+    if (!code) return;
+    const cleanCode = code.trim().toUpperCase();
+    setVoucherInput(cleanCode);
+    setVoucherLoading(true);
+    setVoucherError('');
+    setVoucherModalOpen(false);
+    try {
+      setAppliedVoucherCode(cleanCode);
+      await requestCheckoutPreview(shippingMethod, cleanCode);
+    } catch (err) {
+      setVoucherError(getErrorMessage(err, 'Mã giảm giá không hợp lệ'));
+    } finally {
+      setVoucherLoading(false);
     }
   };
 
@@ -231,6 +307,15 @@ export default function Checkout() {
       });
       console.log('[Checkout] Response:', data.success, 'order=', data.data?.orderCode);
       if (data.success) {
+        if (saveToAddresses && form.address.trim()) {
+          createAddress({
+            recipientName: form.fullName.trim(),
+            phone: form.phone.trim(),
+            detailAddress: form.address.trim(),
+            isDefault: savedAddresses.length === 0,
+          }).catch((err) => console.warn('Lỗi tự động lưu địa chỉ mới:', err));
+        }
+
         clearCart();
         setPlacedOrder(data.data);
         if (payment === 'COD') {
@@ -391,6 +476,30 @@ export default function Checkout() {
   }
 
   // ────────────────────────────────────────────────
+  // TRẠNG THÁI 3: Giỏ hàng trống
+  // ────────────────────────────────────────────────
+  if (displayItems.length === 0 && !placedOrder) {
+    return (
+      <main className="page-content" style={{ background: 'var(--bg)' }}>
+        <div className="container">
+          <div style={{ maxWidth: 500, margin: '80px auto', textAlign: 'center', padding: '0 24px' }}>
+            <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#eff6ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <ShoppingBag size={40} />
+            </div>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8, color: 'var(--text-primary)' }}>Giỏ hàng của bạn đang trống</h2>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: 24, fontSize: 14 }}>
+              Vui lòng thêm sản phẩm vào giỏ hàng trước khi tiến hành thanh toán.
+            </p>
+            <Link to="/products" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '12px 28px', borderRadius: 'var(--radius-full)' }}>
+              Khám phá sản phẩm <ChevronRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ────────────────────────────────────────────────
   // Form checkout bình thường
   // ────────────────────────────────────────────────
   return (
@@ -419,9 +528,64 @@ export default function Checkout() {
 
               {/* Thông tin giao hàng */}
               <div className="checkout-section">
-                <div className="checkout-section-title">
-                  <MapPin size={20} /> Thông tin giao hàng
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: 14 }}>
+                  <div className="checkout-section-title" style={{ margin: 0 }}>
+                    <MapPin size={20} /> Thông tin giao hàng
+                  </div>
+                  {savedAddresses.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowAddressDrawer(true)}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        padding: '6px 12px',
+                        borderRadius: '8px',
+                        background: '#eff6ff',
+                        color: 'var(--primary)',
+                        border: '1px solid #bfdbfe',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.15s'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.background = '#dbeafe'}
+                      onMouseOut={(e) => e.currentTarget.style.background = '#eff6ff'}
+                    >
+                      <BookOpen size={14} />
+                      <span>Chọn từ sổ địa chỉ ({savedAddresses.length})</span>
+                    </button>
+                  )}
                 </div>
+
+                {/* Selected address indicator */}
+                {selectedAddressId && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '8px 12px',
+                    background: '#f0fdf4',
+                    border: '1px solid #bbf7d0',
+                    borderRadius: '8px',
+                    marginBottom: '14px',
+                    fontSize: '12px',
+                    color: '#166534'
+                  }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <CheckCircle2 size={14} color="#16a34a" />
+                      <span>Đang dùng địa chỉ lưu từ sổ địa chỉ của bạn</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddressDrawer(true)}
+                      style={{ background: 'none', border: 'none', color: '#166534', fontWeight: 700, textDecoration: 'underline', cursor: 'pointer', padding: 0 }}
+                    >
+                      Đổi địa chỉ
+                    </button>
+                  </div>
+                )}
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
@@ -434,13 +598,45 @@ export default function Checkout() {
                   </div>
                 </div>
                 <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
-                  <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Địa chỉ</label>
-                  <input className="form-input" style={{ background: '#fff' }} name="address" value={form.address} onChange={handleChange} placeholder="Số nhà, đường, phường, quận, thành phố" required />
+                  <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Địa chỉ giao hàng</label>
+                  <input
+                    className="form-input"
+                    style={{ background: '#fff' }}
+                    name="address"
+                    value={form.address}
+                    onChange={(e) => {
+                      setSelectedAddressId(null);
+                      handleChange(e);
+                    }}
+                    onBlur={() => {
+                      if (form.address.trim()) {
+                        requestCheckoutPreview(shippingMethod, appliedVoucherCode, form.address.trim());
+                      }
+                    }}
+                    placeholder="Số nhà, đường, phường, quận, thành phố"
+                    required
+                  />
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ghi chú (Tùy chọn)</label>
                   <textarea className="form-input" style={{ background: '#fff', resize: 'vertical' }} name="note" value={form.note} onChange={handleChange} rows={2} placeholder="Yêu cầu giao hàng đặc biệt..." />
                 </div>
+
+                {/* Option to save new address to address book */}
+                {!selectedAddressId && form.address.trim() && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                    <input
+                      type="checkbox"
+                      id="saveToAddresses"
+                      checked={saveToAddresses}
+                      onChange={(e) => setSaveToAddresses(e.target.checked)}
+                      style={{ width: 16, height: 16, accentColor: 'var(--primary)', cursor: 'pointer' }}
+                    />
+                    <label htmlFor="saveToAddresses" style={{ fontSize: 12, color: 'var(--text-secondary)', cursor: 'pointer' }}>
+                      Lưu địa chỉ này vào Sổ địa chỉ để sử dụng cho các lần mua sau
+                    </label>
+                  </div>
+                )}
               </div>
 
               <div style={{ height: 1, background: 'var(--border)', margin: '0 0 var(--space-8) 0' }} />
@@ -535,8 +731,29 @@ export default function Checkout() {
 
               {/* Mã giảm giá */}
               <div className="checkout-section">
-                <div className="checkout-section-title">
-                  <Tag size={20} /> Mã giảm giá
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <div className="checkout-section-title" style={{ margin: 0 }}>
+                    <Tag size={20} /> Mã giảm giá
+                  </div>
+                  {availableVouchers.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setVoucherModalOpen(true)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--primary)',
+                        fontSize: 13,
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                      }}
+                    >
+                      <Ticket size={15} /> Chọn mã ({availableVouchers.length})
+                    </button>
+                  )}
                 </div>
                 {appliedVoucherCode && previewData?.voucherValid ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', background: '#f0fdf4', borderRadius: 'var(--radius-lg)', border: '1px solid #bbf7d0' }}>
@@ -648,6 +865,200 @@ export default function Checkout() {
           </div>
         </form>
       </div>
+      {/* ── Modal Chọn Địa Chỉ từ Sổ Địa Chỉ ── */}
+      {showAddressDrawer && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 1000,
+            background: 'rgba(0, 0, 0, 0.45)',
+            backdropFilter: 'blur(3px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 16,
+          }}
+          onClick={() => setShowAddressDrawer(false)}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: 20,
+              maxWidth: 560,
+              width: '100%',
+              maxHeight: '85vh',
+              overflowY: 'auto',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              border: '1px solid var(--border)',
+              padding: 24
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, borderBottom: '1px solid var(--border)', paddingBottom: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: '#eff6ff', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <MapPin size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: 'var(--text-primary)' }}>
+                    Địa Chỉ Nhận Hàng Của Bạn
+                  </h3>
+                  <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+                    Chọn địa chỉ để tự động điền và tính cước vận chuyển
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddressDrawer(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+              {savedAddresses.map((addr) => {
+                const isSelected = selectedAddressId === addr.id;
+                return (
+                  <div
+                    key={addr.id}
+                    onClick={() => handleSelectAddress(addr)}
+                    style={{
+                      border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                      borderRadius: 14,
+                      padding: '14px 16px',
+                      cursor: 'pointer',
+                      background: isSelected ? '#f8faff' : '#ffffff',
+                      transition: 'all 0.15s',
+                      position: 'relative'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                        <strong style={{ fontSize: 14, color: 'var(--text-primary)' }}>{addr.recipientName}</strong>
+                        <span style={{ color: 'var(--text-muted)' }}>|</span>
+                        <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 600 }}>{addr.phone}</span>
+                        {addr.isDefault && (
+                          <span style={{ fontSize: 11, fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', padding: '2px 8px', borderRadius: 999, border: '1px solid #bfdbfe' }}>
+                            ⭐ Mặc định
+                          </span>
+                        )}
+                        <span style={{ fontSize: 11, fontWeight: 700, background: '#f8fafc', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)' }}>
+                          {addr.addressType === 'OFFICE' ? '🏢 Văn phòng' : addr.addressType === 'OTHER' ? '📍 Khác' : '🏠 Nhà riêng'}
+                        </span>
+                      </div>
+                      <div style={{
+                        width: 20, height: 20, borderRadius: '50%',
+                        border: isSelected ? '6px solid var(--primary)' : '2px solid var(--border)',
+                        background: '#fff', flexShrink: 0
+                      }} />
+                    </div>
+                    <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+                      {addr.fullAddress || addr.detailAddress}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: 14, borderTop: '1px solid var(--border)' }}>
+              <Link
+                to="/account/addresses"
+                target="_blank"
+                style={{
+                  fontSize: 13, color: 'var(--primary)', fontWeight: 700,
+                  textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4
+                }}
+              >
+                <Plus size={14} />
+                <span>Quản lý sổ địa chỉ</span>
+              </Link>
+              <button
+                type="button"
+                className="btn btn-outline"
+                style={{ padding: '8px 16px', fontSize: 13 }}
+                onClick={() => setShowAddressDrawer(false)}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Chọn Voucher Khả dụng */}
+      {voucherModalOpen && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div style={{ background: '#fff', borderRadius: 'var(--radius-xl)', maxWidth: 500, width: '100%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ fontWeight: 800, fontSize: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Ticket size={20} color="var(--primary)" />
+                Mã giảm giá khả dụng
+              </div>
+              <button type="button" onClick={() => setVoucherModalOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: 16, overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {availableVouchers.map((v) => {
+                const isSelected = appliedVoucherCode === v.code;
+                return (
+                  <div
+                    key={v.id}
+                    style={{
+                      border: isSelected ? '2px solid var(--primary)' : '1px solid var(--border)',
+                      borderRadius: 12,
+                      padding: 12,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: isSelected ? '#f8fafc' : '#fff',
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 14, background: '#f1f5f9', padding: '2px 8px', borderRadius: 4 }}>
+                          {v.code}
+                        </span>
+                        <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: 14 }}>
+                          {v.discountType === 'PERCENT' ? `Giảm ${v.discountValue}%` : `Giảm ${formatPrice(v.discountValue)}`}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
+                        {v.minOrderValue && Number(v.minOrderValue) > 0 ? `Đơn tối thiểu ${formatPrice(v.minOrderValue)}` : 'Mọi đơn hàng'}
+                        {v.discountType === 'PERCENT' && v.maxDiscount && ` • Tối đa ${formatPrice(v.maxDiscount)}`}
+                      </div>
+                      {v.endDate && (
+                        <div style={{ fontSize: 11, color: '#d97706', marginTop: 2 }}>
+                          HSD: {formatDate(v.endDate)}
+                        </div>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => applyVoucherCode(v.code)}
+                      className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-outline'}`}
+                      style={{ borderRadius: 9999, fontSize: 12, padding: '4px 14px' }}
+                    >
+                      {isSelected ? 'Đang dùng' : 'Áp dụng'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+              <Link to="/account/vouchers" style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>
+                Xem tất cả mã giảm giá
+              </Link>
+              <button type="button" onClick={() => setVoucherModalOpen(false)} className="btn btn-outline btn-sm">
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

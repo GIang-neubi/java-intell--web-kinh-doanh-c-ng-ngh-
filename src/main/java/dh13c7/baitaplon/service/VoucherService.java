@@ -11,4 +11,5 @@ public interface VoucherService {
     void delete(Long id);
     VoucherDTO toggleActive(Long id);
     VoucherDTO validateForCheckout(String code, java.math.BigDecimal orderAmount);
+    java.util.List<dh13c7.baitaplon.dto.CustomerVoucherResponse> getMyVouchers(Long userId, String statusFilter);
 }

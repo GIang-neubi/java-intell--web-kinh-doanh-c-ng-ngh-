@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Chatbot from './components/Chatbot';
 import { ToastProvider } from './components/Toast';
+import ErrorBoundary from './components/ErrorBoundary';
 import Home from './pages/Home';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
@@ -13,6 +14,11 @@ import Register from './pages/Register';
 import Profile from './pages/Profile';
 import Orders from './pages/Orders';
 import Wishlist from './pages/Wishlist';
+import SavedAddresses from './pages/SavedAddresses';
+import Notifications from './pages/Notifications';
+import MyVouchers from './pages/MyVouchers';
+import MyReviews from './pages/MyReviews';
+import WarrantyCenter from './pages/WarrantyCenter';
 import AccountOverview from './pages/AccountOverview';
 import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
@@ -66,8 +72,9 @@ function MainLayout({ children }) {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <BrowserRouter>
+    <ErrorBoundary>
+      <ToastProvider>
+        <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -138,6 +145,31 @@ export default function App() {
               <PrivateRoute><Profile /></PrivateRoute>
             </MainLayout>
           } />
+          <Route path="/account/addresses" element={
+            <MainLayout>
+              <PrivateRoute><SavedAddresses /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/notifications" element={
+            <MainLayout>
+              <PrivateRoute><Notifications /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/vouchers" element={
+            <MainLayout>
+              <PrivateRoute><MyVouchers /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/reviews" element={
+            <MainLayout>
+              <PrivateRoute><MyReviews /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/warranty" element={
+            <MainLayout>
+              <PrivateRoute><WarrantyCenter /></PrivateRoute>
+            </MainLayout>
+          } />
           <Route path="/orders" element={
             <MainLayout>
               <PrivateRoute><Orders /></PrivateRoute>
@@ -168,5 +200,6 @@ export default function App() {
         </Routes>
       </BrowserRouter>
     </ToastProvider>
+  </ErrorBoundary>
   );
 }

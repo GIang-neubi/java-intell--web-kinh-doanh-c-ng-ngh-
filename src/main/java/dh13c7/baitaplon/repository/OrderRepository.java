@@ -84,4 +84,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             ORDER BY FUNCTION('DATE', o.createdAt)
             """)
     List<Object[]> orderCountByDay(@Param("from") LocalDateTime from);
+
+    @Query("SELECT DISTINCT o.voucherCode FROM Order o WHERE o.user.id = :userId AND o.voucherCode IS NOT NULL")
+    List<String> findVoucherCodesUsedByUserId(@Param("userId") Long userId);
 }

@@ -16,6 +16,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 
     boolean existsByProductId(Long productId);
 
+    /** Kiểm tra user đã từng mua sản phẩm (bất kỳ trạng thái đơn nào) */
+    boolean existsByProductIdAndOrderUserId(Long productId, Long userId);
+
     @Query("""
             SELECT oi.product.id, oi.product.name, oi.product.image,
                    SUM(oi.quantity), SUM(oi.price * oi.quantity)

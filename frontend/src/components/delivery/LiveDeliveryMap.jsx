@@ -12,6 +12,7 @@ import {
   buildFullRouteUrl,
   getDeliveryNavigationStage
 } from '../../utils/navigation';
+import { setupMapTiles, getApproximateCoordsFromAddress } from '../../utils/mapTiles';
 
 // Helper: tính thời gian "X giây/phút trước"
 function getTimeAgo(dateString) {
@@ -178,22 +179,10 @@ export default function LiveDeliveryMap({
 
     // Tự động tìm tọa độ điểm nhận khách hàng nếu chưa có
     const query = delivery.deliveryAddress.trim();
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=vn&limit=1`;
-    fetch(url, { headers: { 'Accept-Language': 'vi,en' } })
-      .then((r) => r.json())
-      .then((data) => {
-        if (!alive) return;
-        if (data && data.length > 0) {
-          setCustomerCoords({
-            lat: parseFloat(parseFloat(data[0].lat).toFixed(6)),
-            lng: parseFloat(parseFloat(data[0].lon).toFixed(6)),
-          });
-        }
-      })
-      .catch(() => {
-        // Nếu không geocode được, không sinh tọa độ ảo
-      });
-
+    const approx = getApproximateCoordsFromAddress(query);
+    if (approx) {
+      setCustomerCoords(approx);
+    }
     return () => { alive = false; };
   }, [delivery?.deliveryAddress]);
 
@@ -209,14 +198,7 @@ export default function LiveDeliveryMap({
       attributionControl: false,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors',
-    }).addTo(map);
-
-    L.control.attribution({ position: 'bottomright', prefix: false })
-      .addAttribution('© OpenStreetMap')
-      .addTo(map);
+    setupMapTiles(map);
 
     const markersGroup = L.featureGroup().addTo(map);
     markersGroupRef.current = markersGroup;

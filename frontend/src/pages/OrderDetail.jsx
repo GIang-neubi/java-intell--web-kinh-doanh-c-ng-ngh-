@@ -1,22 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Package, MapPin, Phone, AlertCircle, ArrowLeft, CreditCard, User, Calendar, CheckCircle2, Copy, Check } from 'lucide-react';
+import { Package, MapPin, Phone, AlertCircle, ArrowLeft, CreditCard, User } from 'lucide-react';
 import { getErrorMessage } from '../api/client';
 import AccountLayout from '../layouts/AccountLayout';
-import { formatPrice, formatDate, statusLabel, statusClass, paymentStatusLabel, orderItemsSubtotal, shippingMethodLabel } from '../utils/helpers';
+import { formatPrice, paymentStatusLabel, orderItemsSubtotal, shippingMethodLabel } from '../utils/helpers';
 import { fetchMyOrderById } from '../api/orders';
 import { resolveImageUrl } from '../utils/imageUrl';
-import DeliveryTimeline from '../components/delivery/DeliveryTimeline';
+import CustomerDeliveryCard from '../components/delivery/CustomerDeliveryCard';
 
 const PAYMENT_LABEL = { COD: 'Thanh toán khi nhận hàng (COD)', BANKING: 'Chuyển khoản trực tuyến (QR / Banking)' };
-
-const STATUS_STEPS = [
-  { key: 'PENDING', label: 'Đã đặt' },
-  { key: 'CONFIRMED', label: 'Xác nhận' },
-  { key: 'PROCESSING', label: 'Xử lý đóng gói' },
-  { key: 'SHIPPING', label: 'Đang vận chuyển' },
-  { key: 'DELIVERED', label: 'Giao hoàn tất' },
-];
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -25,7 +17,6 @@ export default function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [copiedCode, setCopiedCode] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -42,13 +33,6 @@ export default function OrderDetail() {
       }
     })();
   }, [id, navigate]);
-
-  const handleCopyCode = (code) => {
-    if (!code) return;
-    navigator.clipboard.writeText(code);
-    setCopiedCode(true);
-    setTimeout(() => setCopiedCode(false), 2000);
-  };
 
   if (loading) {
     return (
@@ -87,8 +71,6 @@ export default function OrderDetail() {
     );
   }
 
-  const currentIdx = STATUS_STEPS.findIndex(s => s.key === order.status);
-  const isCancelled = order.status === 'CANCELLED';
   const subtotal = orderItemsSubtotal(order);
   const discount = Number(order.discountAmount) || 0;
 
@@ -117,144 +99,9 @@ export default function OrderDetail() {
         <span>Quay lại đơn mua</span>
       </button>
 
-      {/* Header Receipt Card */}
-      <div style={{
-        background: '#ffffff',
-        border: '1px solid var(--border)',
-        borderRadius: '16px',
-        padding: '24px',
-        marginBottom: '18px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                MÃ ĐƠN HÀNG
-              </span>
-              <button
-                type="button"
-                onClick={() => handleCopyCode(order.orderCode)}
-                style={{
-                  background: 'none', border: 'none', color: copiedCode ? '#10b981' : 'var(--text-muted)',
-                  cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '3px', fontSize: '11px', padding: 0
-                }}
-                title="Sao chép mã đơn hàng"
-              >
-                {copiedCode ? <Check size={12} /> : <Copy size={12} />}
-                <span>{copiedCode ? 'Đã chép' : 'Sao chép'}</span>
-              </button>
-            </div>
-
-            <div style={{
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-              fontWeight: 800,
-              fontSize: '22px',
-              color: 'var(--text-primary)',
-              letterSpacing: '0.02em',
-              marginTop: '4px'
-            }}>
-              #{order.orderCode}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: 13, color: 'var(--text-secondary)', marginTop: 8, flexWrap: 'wrap' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                <Calendar size={14} style={{ color: 'var(--text-muted)' }} />
-                <span>Đặt ngày {order.createdAt ? formatDate(order.createdAt) : '—'}</span>
-              </span>
-              <span>·</span>
-              <span>{order.items?.length || 0} sản phẩm</span>
-            </div>
-
-            <div style={{ marginTop: '12px' }}>
-              <span
-                className={`status-badge ${statusClass[order.status] || ''}`}
-                style={{ fontSize: '12px', fontWeight: 700, padding: '4px 12px', borderRadius: '999px' }}
-              >
-                {statusLabel[order.status] || order.status}
-              </span>
-            </div>
-          </div>
-
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>
-              Tổng tiền thanh toán
-            </div>
-            <div style={{ fontSize: 26, fontWeight: 900, color: '#0a3d8f', letterSpacing: '-0.02em' }}>
-              {formatPrice(order.totalAmount)}
-            </div>
-            <div style={{ fontSize: '12px', color: order.paymentStatus === 'PAID' ? '#047857' : '#b45309', fontWeight: 600, marginTop: '4px' }}>
-              {paymentStatusLabel[order.paymentStatus] || order.paymentStatus}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* High-level Lifecycle Stepper */}
-      <div style={{
-        background: '#ffffff',
-        border: '1px solid var(--border)',
-        borderRadius: '16px',
-        padding: '20px 24px',
-        marginBottom: '18px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
-      }}>
-        <div style={{ display: 'flex', gap: 0, overflowX: 'auto', paddingBottom: 6 }}>
-          {STATUS_STEPS.map((step, i) => {
-            const done = isCancelled ? false : i < currentIdx;
-            const active = !isCancelled && i === currentIdx;
-            const passed = isCancelled ? false : i <= currentIdx;
-            return (
-              <div key={step.key} style={{ flex: 1, minWidth: 90, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
-                {i > 0 && (
-                  <div style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: '50%',
-                    top: 13,
-                    height: 2,
-                    background: passed ? '#0a3d8f' : '#e2e8f0',
-                    transition: 'background 0.3s ease'
-                  }} />
-                )}
-                <div style={{
-                  width: 26,
-                  height: 26,
-                  borderRadius: '50%',
-                  zIndex: 2,
-                  flexShrink: 0,
-                  background: done ? '#0a3d8f' : active ? '#ffffff' : '#ffffff',
-                  border: `2px solid ${done || active ? '#0a3d8f' : '#cbd5e1'}`,
-                  color: done ? '#ffffff' : active ? '#0a3d8f' : '#94a3b8',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 11,
-                  fontWeight: 800,
-                  boxShadow: active ? '0 0 0 4px rgba(10, 61, 143, 0.12)' : 'none',
-                  transition: 'all 0.2s ease'
-                }}>
-                  {done ? '✓' : i + 1}
-                </div>
-                <div style={{
-                  fontSize: 11,
-                  fontWeight: active || done ? 700 : 500,
-                  color: active ? '#0a3d8f' : done ? 'var(--text-primary)' : 'var(--text-muted)',
-                  marginTop: 6,
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap'
-                }}>
-                  {step.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Real-time Delivery Tracking & OTP Banner */}
-      <DeliveryTimeline
-        orderId={order.id}
+      {/* Phase 14 — Unified Customer Delivery Experience Card */}
+      <CustomerDeliveryCard
+        order={order}
         onUpdated={() => fetchMyOrderById(id).then(setOrder)}
       />
 

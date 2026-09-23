@@ -46,6 +46,9 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final WarehouseSelectionService warehouseSelectionService;
 
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private dh13c7.baitaplon.service.NotificationService notificationService;
+
     @Override
     @Transactional(readOnly = true)
     public CheckoutPreviewResponse calculateCheckoutPreview(Long userId, CheckoutPreviewRequest request) {
@@ -352,6 +355,27 @@ public class OrderServiceImpl implements OrderService {
         cart.getItems().clear();
         cartRepository.save(cart);
 
+        // 10. Gửi thông báo đặt hàng cho khách hàng và quản trị viên
+        if (notificationService != null) {
+            try {
+                notificationService.sendNotification(
+                        user.getId(),
+                        "Đặt hàng thành công!",
+                        "Đơn hàng #" + savedOrder.getOrderCode() + " đã được tạo thành công. H&G Store đang chuẩn bị đơn hàng cho bạn.",
+                        "ORDER",
+                        "/orders/" + savedOrder.getId()
+                );
+                notificationService.notifyAdmins(
+                        "Đơn hàng mới #" + savedOrder.getOrderCode(),
+                        "Khách hàng " + (user.getFullName() != null ? user.getFullName() : user.getUsername()) + " vừa đặt đơn hàng #" + savedOrder.getOrderCode(),
+                        "ORDER",
+                        "/admin/orders/" + savedOrder.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Không thể gửi thông báo đặt hàng: {}", e.getMessage());
+            }
+        }
+
         return mapToDTO(savedOrder);
     }
 
@@ -422,7 +446,23 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setStatus(newStatus);
-        return mapToDTO(orderRepository.save(order));
+        Order updatedOrder = orderRepository.save(order);
+
+        if (notificationService != null && order.getUser() != null) {
+            try {
+                notificationService.sendNotification(
+                        order.getUser().getId(),
+                        "Cập nhật đơn hàng #" + order.getOrderCode(),
+                        "Đơn hàng của bạn đã được cập nhật sang trạng thái: " + newStatus.name(),
+                        "ORDER",
+                        "/orders/" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Không thể gửi thông báo cập nhật đơn hàng: {}", e.getMessage());
+            }
+        }
+
+        return mapToDTO(updatedOrder);
     }
 
     @Override

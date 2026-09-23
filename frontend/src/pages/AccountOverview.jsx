@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Package, Heart, ShoppingCart, ChevronRight, Clock, CheckCircle,
   FileText, Truck, MapPin, Award, ShieldCheck, Sparkles, Navigation,
-  ExternalLink, Camera, X, Ticket, ArrowRight, RotateCcw, AlertCircle
+  ExternalLink, Camera, X, Ticket, ArrowRight, RotateCcw, AlertCircle, Check
 } from 'lucide-react';
 import { useAuthStore, useCartStore } from '../store';
 import api, { getErrorMessage } from '../api/client';
@@ -235,16 +235,27 @@ export default function AccountOverview() {
       title: 'Sổ địa chỉ nhận hàng',
       desc: user?.address || 'Quản lý thông tin giao hàng',
       icon: MapPin,
-      path: '/profile',
+      path: '/account/addresses',
       color: '#7c3aed',
       bg: '#f5f3ff',
+    },
+    {
+      id: 'vouchers',
+      title: 'Mã giảm giá của tôi',
+      desc: 'Kho voucher & mã khuyến mại ưu đãi',
+      icon: Ticket,
+      path: '/account/vouchers',
+      color: '#059669',
+      bg: '#ecfdf5',
+      badge: 'Ưu đãi hot',
+      badgeColor: '#059669',
     },
     {
       id: 'warranty',
       title: 'Trung tâm bảo hành',
       desc: 'Bảo hành chính hãng máy ảnh 12–24 tháng',
       icon: ShieldCheck,
-      path: '/profile',
+      path: '/account/warranty',
       color: '#0284c7',
       bg: '#f0f9ff',
       badge: 'Chính hãng 100%',

@@ -9,6 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
@@ -38,6 +39,13 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         ApiResponse<Map<String, String>> response = new ApiResponse<>(false, "Validation failed", errors);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String message = String.format("Tham số '%s' không hợp lệ: %s", ex.getName(), ex.getValue());
+        ApiResponse<Object> response = new ApiResponse<>(false, message, null);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +13,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ReviewDTO {
     private Long id;
     private Long productId;
+    private String productName;
+    private String productImage;
     private Long userId;
     private String username;
     private String fullName;
@@ -26,4 +30,10 @@ public class ReviewDTO {
 
     private String comment;
     private LocalDateTime createdAt;
+
+    /** true nếu user đã mua sản phẩm này (Verified Purchase badge) */
+    private boolean verified;
+
+    /** true nếu người dùng hiện tại là chủ review (hiển thị nút sửa/xóa) */
+    private boolean canDelete;
 }

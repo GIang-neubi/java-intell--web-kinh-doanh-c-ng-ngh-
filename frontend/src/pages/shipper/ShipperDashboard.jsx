@@ -44,10 +44,12 @@ export default function ShipperDashboard() {
         .catch(() => {});
 
       let statusParam = activeTab;
-      if (activeTab === 'ALL_ACTIVE') statusParam = undefined;
+      if (['ALL', 'ALL_ACTIVE', 'IN_TRANSIT_GROUP', 'HISTORY'].includes(activeTab)) {
+        statusParam = undefined;
+      }
 
       const data = await fetchShipperDeliveries({
-        status: statusParam === 'ALL' ? undefined : (statusParam === 'HISTORY' ? undefined : statusParam),
+        status: statusParam,
         page: 0,
         size: 50,
       });
