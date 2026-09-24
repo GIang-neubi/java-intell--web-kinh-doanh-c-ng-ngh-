@@ -15,6 +15,7 @@ public interface OrderService {
     List<OrderDTO> getMyOrders(Long userId);
     OrderDTO getOrderById(Long orderId);
     OrderDTO getMyOrderById(Long orderId, Long userId);
+    OrderDTO cancelMyOrder(Long orderId, Long userId);
     OrderDTO updateOrderStatus(Long orderId, OrderStatus status);
     List<OrderDTO> getRecentOrders(int limit);
     List<OrderDTO> getAllOrders();

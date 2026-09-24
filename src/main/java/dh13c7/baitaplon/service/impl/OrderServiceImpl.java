@@ -47,6 +47,9 @@ public class OrderServiceImpl implements OrderService {
     private final WarehouseSelectionService warehouseSelectionService;
 
     @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private dh13c7.baitaplon.service.RefundService refundService;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
     private dh13c7.baitaplon.service.NotificationService notificationService;
 
     @Override
@@ -405,6 +408,62 @@ public class OrderServiceImpl implements OrderService {
         return mapToDTO(order);
     }
 
+    @Override
+    @Transactional
+    public OrderDTO cancelMyOrder(Long orderId, Long userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn hàng"));
+        
+        if (!order.getUser().getId().equals(userId)) {
+            throw new ResourceNotFoundException("Không tìm thấy đơn hàng");
+        }
+        
+        OrderStatus current = order.getStatus();
+        if (current != OrderStatus.PENDING && current != OrderStatus.CONFIRMED) {
+            throw new BadRequestException("Chỉ có thể hủy đơn hàng ở trạng thái Chờ xử lý hoặc Đã xác nhận.");
+        }
+        
+        // Hoàn kho
+        for (OrderItem item : order.getOrderItems()) {
+            Product product = item.getProduct();
+            product.setStock(product.getStock() + item.getQuantity());
+            productRepository.save(product);
+        }
+        
+        // Cập nhật Delivery
+        try {
+            deliveryService.cancelDeliveryForOrder(orderId, "Đơn hàng đã bị hủy bởi khách hàng");
+        } catch (Exception e) {
+            log.warn("Không thể hủy phiếu giao hàng cho đơn #" + orderId + ": " + e.getMessage());
+        }
+        
+        order.setStatus(OrderStatus.CANCELLED);
+        Order updatedOrder = orderRepository.save(order);
+        
+        if (refundService != null) {
+            try {
+                refundService.createRefundForCancellation(updatedOrder);
+            } catch (Exception e) {
+                log.warn("Lỗi tạo refund cho hủy đơn hàng: {}", e.getMessage());
+            }
+        }
+        
+        if (notificationService != null) {
+            try {
+                notificationService.notifyAdmins(
+                        "Đơn hàng #" + order.getOrderCode() + " đã bị hủy",
+                        "Khách hàng đã tự hủy đơn hàng #" + order.getOrderCode(),
+                        "ORDER",
+                        "/admin/orders/" + order.getId()
+                );
+            } catch (Exception e) {
+                log.warn("Không thể gửi thông báo hủy đơn hàng: {}", e.getMessage());
+            }
+        }
+        
+        return mapToDTO(updatedOrder);
+    }
+
     // Valid transitions: PENDING→CONFIRMED, CONFIRMED→PROCESSING, PROCESSING→SHIPPING,
     //                    SHIPPING→DELIVERED, any→CANCELLED (except already DELIVERED)
     private static final Map<OrderStatus, Set<OrderStatus>> TRANSITIONS = Map.of(
@@ -447,6 +506,14 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(newStatus);
         Order updatedOrder = orderRepository.save(order);
+
+        if (newStatus == OrderStatus.CANCELLED && refundService != null) {
+            try {
+                refundService.createRefundForCancellation(updatedOrder);
+            } catch (Exception e) {
+                log.warn("Lỗi tạo refund cho hủy đơn hàng: {}", e.getMessage());
+            }
+        }
 
         if (notificationService != null && order.getUser() != null) {
             try {

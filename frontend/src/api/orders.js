@@ -48,3 +48,13 @@ export async function updateOrderStatus(id, status) {
   if (!data.success) throw new Error(data.message || 'Cập nhật trạng thái thất bại');
   return data.data; // OrderDTO
 }
+
+/**
+ * Khách hàng tự hủy đơn
+ * @param {number} id 
+ */
+export async function cancelMyOrder(id) {
+  const { data } = await api.post(`/orders/me/${id}/cancel`);
+  if (!data.success) throw new Error(data.message || 'Hủy đơn hàng thất bại');
+  return data.data; // OrderDTO
+}

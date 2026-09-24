@@ -4,7 +4,7 @@ import { Package, MapPin, Phone, AlertCircle, ArrowLeft, CreditCard, User } from
 import { getErrorMessage } from '../api/client';
 import AccountLayout from '../layouts/AccountLayout';
 import { formatPrice, paymentStatusLabel, orderItemsSubtotal, shippingMethodLabel } from '../utils/helpers';
-import { fetchMyOrderById } from '../api/orders';
+import { fetchMyOrderById, cancelMyOrder } from '../api/orders';
 import { resolveImageUrl } from '../utils/imageUrl';
 import CustomerDeliveryCard from '../components/delivery/CustomerDeliveryCard';
 
@@ -17,6 +17,22 @@ export default function OrderDetail() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [canceling, setCanceling] = useState(false);
+
+  const handleCancelOrder = async () => {
+    if (!window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) return;
+    setCanceling(true);
+    try {
+      await cancelMyOrder(order.id);
+      const updatedOrder = await fetchMyOrderById(order.id);
+      setOrder(updatedOrder);
+      alert('Hủy đơn hàng thành công');
+    } catch (err) {
+      alert(getErrorMessage(err, 'Hủy đơn hàng thất bại'));
+    } finally {
+      setCanceling(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -76,28 +92,68 @@ export default function OrderDetail() {
 
   return (
     <AccountLayout activeTab="orders">
-      {/* Back Button */}
-      <button
-        type="button"
-        onClick={() => navigate('/orders')}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 8,
-          fontSize: 13,
-          fontWeight: 600,
-          color: 'var(--text-secondary)',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          marginBottom: '16px',
-          padding: '6px 0',
-          transition: 'color 0.15s ease'
-        }}
-      >
-        <ArrowLeft size={15} />
-        <span>Quay lại đơn mua</span>
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <button
+          type="button"
+          onClick={() => navigate('/orders')}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--text-secondary)',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '6px 0',
+            transition: 'color 0.15s ease'
+          }}
+        >
+          <ArrowLeft size={15} />
+          <span>Quay lại đơn mua</span>
+        </button>
+
+        {(order.status === 'PENDING' || order.status === 'CONFIRMED') && (
+          <button
+            type="button"
+            onClick={handleCancelOrder}
+            disabled={canceling}
+            style={{
+              padding: '6px 12px',
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#dc2626',
+              background: '#fee2e2',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: canceling ? 'not-allowed' : 'pointer',
+              opacity: canceling ? 0.7 : 1
+            }}
+          >
+            {canceling ? 'Đang hủy...' : 'Hủy đơn hàng'}
+          </button>
+        )}
+
+        {order.status === 'DELIVERED' && (
+          <button
+            type="button"
+            onClick={() => navigate(`/account/returns/create/${order.id}`)}
+            style={{
+              padding: '6px 12px',
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#0284c7',
+              background: '#e0f2fe',
+              border: 'none',
+              borderRadius: 'var(--radius-md)',
+              cursor: 'pointer'
+            }}
+          >
+            Yêu cầu trả hàng
+          </button>
+        )}
+      </div>
 
       {/* Phase 14 — Unified Customer Delivery Experience Card */}
       <CustomerDeliveryCard

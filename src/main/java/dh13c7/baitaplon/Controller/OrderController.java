@@ -81,6 +81,12 @@ public class OrderController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Lấy chi tiết đơn hàng thành công", order));
     }
 
+    @PostMapping("/me/{id}/cancel")
+    public ResponseEntity<ApiResponse<OrderDTO>> cancelMyOrder(@PathVariable Long id) {
+        OrderDTO order = orderService.cancelMyOrder(id, getCurrentUserId());
+        return ResponseEntity.ok(new ApiResponse<>(true, "Hủy đơn hàng thành công", order));
+    }
+
     // ================= ADMIN APIs =================
 
     @PreAuthorize("hasRole('ADMIN')")

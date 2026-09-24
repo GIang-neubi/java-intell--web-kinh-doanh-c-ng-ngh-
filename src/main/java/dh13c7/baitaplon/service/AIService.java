@@ -10,6 +10,8 @@ import dh13c7.baitaplon.repository.CartRepository;
 import dh13c7.baitaplon.repository.OrderRepository;
 import dh13c7.baitaplon.repository.ProductRepository;
 import dh13c7.baitaplon.repository.ReviewRepository;
+import dh13c7.baitaplon.repository.ReturnRequestRepository;
+import dh13c7.baitaplon.repository.RefundRepository;
 import dh13c7.baitaplon.service.ai.AiConfigProperties;
 import dh13c7.baitaplon.service.ai.FallbackAiEngine;
 import dh13c7.baitaplon.service.ai.GeminiAiProvider;
@@ -36,6 +38,8 @@ public class AIService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final ReviewRepository reviewRepository;
+    private final ReturnRequestRepository returnRequestRepository;
+    private final RefundRepository refundRepository;
 
     private final GeminiAiProvider geminiAiProvider;
     private final FallbackAiEngine fallbackAiEngine;
@@ -213,7 +217,13 @@ public class AIService {
                   - Chủ tài khoản: NGUYEN TRUONG GIANG
                   - Hệ thống tự động kích hoạt trạng thái PAID trong 3-5 giây sau khi nhận giao dịch.
                 • Thanh toán COD: Nhận hàng kiểm tra và thanh toán tiền mặt.
-                • Chính sách đổi trả: 1 đổi 1 trong vòng 7 ngày nếu lỗi từ nhà sản xuất.
+                • Chính sách đổi trả: Khách hàng có thể yêu cầu đổi trả trong vòng 7 ngày kể từ khi đơn hàng ở trạng thái DELIVERED (Đã giao thành công).
+                • Trả hàng/Hoàn tiền:
+                  - Hủy đơn hàng (đã thanh toán): Hoàn 100% số tiền gốc tự động.
+                  - Đổi trả do lỗi nhà sản xuất (DEFECTIVE_PRODUCT), hỏng hóc (DAMAGED_PRODUCT) hoặc giao sai (WRONG_PRODUCT): Sẽ được hỗ trợ hoàn tiền hoặc đổi mới. Tiền hoàn sẽ theo tỷ lệ sản phẩm lỗi (tối đa bằng tổng tiền đã thanh toán của đơn).
+                  - Nếu trả hàng do Đổi ý (CHANGE_OF_MIND): Không hoàn phí ship (nếu có).
+                  - Trạng thái Yêu cầu trả hàng: RETURN_REQUESTED (Đã gửi yêu cầu) -> RETURN_APPROVED (Chấp nhận) -> RETURNING (Đang hoàn về) -> RETURN_RECEIVED (Đã nhận hàng tại kho). 
+                  - Trạng thái Hoàn tiền: REFUND_PENDING (Chờ xử lý) -> REFUNDED (Đã hoàn tiền thành công).
                 • Bảo hành: Chính hãng 12 - 24 tháng theo từng dòng máy.
                 • Giao hàng: Toàn quốc từ 2-4 ngày làm việc, bảo hiểm hàng hóa 100%.
                 
@@ -253,6 +263,30 @@ public class AIService {
             } else {
                 sb.append("• Đơn hàng: Khách hàng chưa có đơn hàng nào.\n");
             }
+
+            // User Recent Returns
+            try {
+                var returnsPage = returnRequestRepository.findByCustomer_IdOrderByCreatedAtDesc(currentUserId, org.springframework.data.domain.PageRequest.of(0, 3));
+                if (returnsPage.hasContent()) {
+                    sb.append("• Các yêu cầu trả hàng của khách:\n");
+                    for (ReturnRequest r : returnsPage.getContent()) {
+                        sb.append(String.format("  - Yêu cầu trả hàng cho đơn #%s | Trạng thái: %s | Lý do: %s\n",
+                                r.getOrder().getOrderCode(), r.getStatus(), r.getReason()));
+                    }
+                }
+            } catch (Exception e) {}
+
+            // User Refunds
+            try {
+                var refundsPage = refundRepository.findByOrder_User_IdOrderByCreatedAtDesc(currentUserId, org.springframework.data.domain.PageRequest.of(0, 3));
+                if (refundsPage.hasContent()) {
+                    sb.append("• Các khoản hoàn tiền của khách:\n");
+                    for (Refund r : refundsPage.getContent()) {
+                        sb.append(String.format("  - Hoàn tiền cho đơn #%s | Số tiền: %,.0f đ | Trạng thái: %s\n",
+                                r.getOrder().getOrderCode(), r.getAmount().doubleValue(), r.getStatus()));
+                    }
+                }
+            } catch (Exception e) {}
         } else {
             sb.append("Khách hàng CHƯA ĐĂNG NHẬP (Khách vãng lai).\n");
             sb.append("Nếu khách hỏi về đơn hàng hay giỏ hàng cá nhân, hãy lịch sự đề nghị khách đăng nhập vào tài khoản H&G.\n");

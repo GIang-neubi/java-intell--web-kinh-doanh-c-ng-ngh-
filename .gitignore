@@ -36,3 +36,5 @@ build/
 uploads/**
 !uploads/products/
 !uploads/products/.gitkeep
+# Playwright CLI output (may contain credentials)
+.playwright-cli/

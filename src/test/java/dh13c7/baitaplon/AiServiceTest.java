@@ -7,6 +7,8 @@ import dh13c7.baitaplon.repository.CartRepository;
 import dh13c7.baitaplon.repository.OrderRepository;
 import dh13c7.baitaplon.repository.ProductRepository;
 import dh13c7.baitaplon.repository.ReviewRepository;
+import dh13c7.baitaplon.repository.ReturnRequestRepository;
+import dh13c7.baitaplon.repository.RefundRepository;
 import dh13c7.baitaplon.service.AIService;
 import dh13c7.baitaplon.service.ai.AiConfigProperties;
 import dh13c7.baitaplon.service.ai.FallbackAiEngine;
@@ -32,6 +34,8 @@ class AiServiceTest {
     @Mock private CartRepository cartRepository;
     @Mock private OrderRepository orderRepository;
     @Mock private ReviewRepository reviewRepository;
+    @Mock private ReturnRequestRepository returnRequestRepository;
+    @Mock private RefundRepository refundRepository;
     @Mock private GeminiAiProvider geminiAiProvider;
 
     private AiConfigProperties aiConfig;
@@ -50,6 +54,8 @@ class AiServiceTest {
                 cartRepository,
                 orderRepository,
                 reviewRepository,
+                returnRequestRepository,
+                refundRepository,
                 geminiAiProvider,
                 fallbackAiEngine,
                 aiConfig

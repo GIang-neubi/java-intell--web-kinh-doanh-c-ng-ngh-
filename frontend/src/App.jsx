@@ -18,6 +18,9 @@ import SavedAddresses from './pages/SavedAddresses';
 import Notifications from './pages/Notifications';
 import MyVouchers from './pages/MyVouchers';
 import MyReviews from './pages/MyReviews';
+import Refunds from './pages/Refunds';
+import Returns from './pages/Returns';
+import CreateReturn from './pages/CreateReturn';
 import WarrantyCenter from './pages/WarrantyCenter';
 import AccountOverview from './pages/AccountOverview';
 import AdminLayout from './layouts/AdminLayout';
@@ -46,6 +49,10 @@ import WarehouseList from './pages/admin/warehouses/WarehouseList';
 import WarehouseForm from './pages/admin/warehouses/WarehouseForm';
 import WarehouseDetail from './pages/admin/warehouses/WarehouseDetail';
 import AdminProfile from './pages/admin/AdminProfile';
+import AdminReturnList from './pages/admin/returns/AdminReturnList';
+import AdminReturnDetail from './pages/admin/returns/AdminReturnDetail';
+import AdminRefundList from './pages/admin/refunds/AdminRefundList';
+import AdminRefundDetail from './pages/admin/refunds/AdminRefundDetail';
 import { useAuthStore } from './store';
 
 function PrivateRoute({ children, adminOnly = false, shipperOnly = false }) {
@@ -107,6 +114,10 @@ export default function App() {
             <Route path="vouchers" element={<VoucherList />} />
             <Route path="brands" element={<BrandList />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="returns" element={<AdminReturnList />} />
+            <Route path="returns/:id" element={<AdminReturnDetail />} />
+            <Route path="refunds" element={<AdminRefundList />} />
+            <Route path="refunds/:id" element={<AdminRefundDetail />} />
             <Route path="chat" element={<AdminChat />} />
             <Route path="ai" element={<AISettings />} />
             <Route path="profile" element={<AdminProfile />} />
@@ -163,6 +174,21 @@ export default function App() {
           <Route path="/account/reviews" element={
             <MainLayout>
               <PrivateRoute><MyReviews /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/refunds" element={
+            <MainLayout>
+              <PrivateRoute><Refunds /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/returns" element={
+            <MainLayout>
+              <PrivateRoute><Returns /></PrivateRoute>
+            </MainLayout>
+          } />
+          <Route path="/account/returns/create/:id" element={
+            <MainLayout>
+              <PrivateRoute><CreateReturn /></PrivateRoute>
             </MainLayout>
           } />
           <Route path="/account/warranty" element={

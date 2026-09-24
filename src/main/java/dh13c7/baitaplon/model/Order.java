@@ -76,6 +76,9 @@ public class Order {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @org.hibernate.annotations.UpdateTimestamp
+    private LocalDateTime updatedAt;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems;
 }
