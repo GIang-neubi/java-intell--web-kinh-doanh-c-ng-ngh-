@@ -96,7 +96,7 @@ export default function AdminShipperList() {
             gap: '8px',
             padding: '9px 16px',
             borderRadius: '10px',
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             color: 'var(--text-primary)',
             fontSize: '13px',
@@ -159,15 +159,15 @@ export default function AdminShipperList() {
 
       {/* Shippers List / Cards */}
       {loading ? (
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid var(--border)', padding: '60px 20px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border)', padding: '60px 20px', textAlign: 'center' }}>
           <AdminLoading label="Đang tải danh sách nhân viên giao hàng..." />
         </div>
       ) : error ? (
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid var(--border)', padding: '40px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border)', padding: '40px 20px' }}>
           <AdminError message={error} onRetry={load} />
         </div>
       ) : shippers.length === 0 ? (
-        <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid var(--border)', padding: '60px 20px' }}>
+        <div style={{ background: 'var(--bg-card)', borderRadius: '16px', border: '1px solid var(--border)', padding: '60px 20px' }}>
           <AdminEmpty
             title="Chưa có Shipper nào"
             description="Chưa có tài khoản nào được phân quyền ROLE_SHIPPER trong hệ thống."

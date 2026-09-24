@@ -48,7 +48,7 @@ export default function AdminRefundDetail() {
   if (!refund) return <div>Không tìm thấy dữ liệu</div>;
 
   return (
-    <div style={{ background: '#fff', padding: 24, borderRadius: 12 }}>
+    <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 12 }}>
       <h2>Chi tiết Hoàn tiền #{refund.id}</h2>
       
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>

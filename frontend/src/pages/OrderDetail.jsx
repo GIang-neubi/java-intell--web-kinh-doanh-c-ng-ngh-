@@ -164,7 +164,7 @@ export default function OrderDetail() {
       {/* Products Desktop Table */}
       <div className="order-detail-desktop" style={{ marginBottom: '18px' }}>
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '22px',
@@ -187,7 +187,7 @@ export default function OrderDetail() {
               <div style={{
                 width: 60,
                 height: 60,
-                background: '#f8fafc',
+                background: 'var(--bg)',
                 borderRadius: '12px',
                 border: '1px solid var(--border)',
                 overflow: 'hidden',
@@ -228,7 +228,7 @@ export default function OrderDetail() {
       <div className="order-detail-mobile-cards" style={{ marginBottom: '18px' }}>
         {order.items?.map((item, idx) => (
           <div key={item.id || idx} style={{
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border)',
             borderRadius: '14px',
             padding: '14px',
@@ -236,7 +236,7 @@ export default function OrderDetail() {
           }}>
             <div style={{ display: 'flex', gap: 12 }}>
               <div style={{
-                width: 56, height: 56, background: '#f8fafc', borderRadius: '10px',
+                width: 56, height: 56, background: 'var(--bg)', borderRadius: '10px',
                 border: '1px solid var(--border)', overflow: 'hidden', display: 'flex',
                 alignItems: 'center', justifyContent: 'center', padding: 4, flexShrink: 0
               }}>
@@ -269,7 +269,7 @@ export default function OrderDetail() {
       <div className="order-detail-info-grid" style={{ marginBottom: '18px' }}>
         {/* Shipping box */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '20px',
@@ -295,7 +295,7 @@ export default function OrderDetail() {
 
         {/* Payment box */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '20px',
@@ -325,7 +325,7 @@ export default function OrderDetail() {
               </span>
             </div>
             {order.transferContent && order.paymentMethod === 'BANKING' && (
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', background: '#f8fafc', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: 'var(--text-secondary)', background: 'var(--bg)', padding: '6px 10px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: 4 }}>
                 <span style={{ color: 'var(--text-muted)' }}>Nội dung CK: </span>
                 <code style={{ fontFamily: 'monospace', fontWeight: 800, color: '#0a3d8f' }}>{order.transferContent}</code>
               </div>
@@ -335,7 +335,7 @@ export default function OrderDetail() {
 
         {/* Delivery Method box */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '20px',
@@ -363,7 +363,7 @@ export default function OrderDetail() {
 
       {/* Financial Summary Receipt Card */}
       <div style={{
-        background: '#ffffff',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)',
         borderRadius: '16px',
         padding: '24px',

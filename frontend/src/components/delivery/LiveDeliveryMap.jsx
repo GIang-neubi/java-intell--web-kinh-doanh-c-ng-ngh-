@@ -378,7 +378,7 @@ export default function LiveDeliveryMap({
 
   return (
     <div style={{
-      background: '#ffffff',
+      background: 'var(--bg-card)',
       border: '1px solid var(--border)',
       borderRadius: 'var(--radius-xl, 16px)',
       overflow: 'hidden',
@@ -464,7 +464,7 @@ export default function LiveDeliveryMap({
               style={{
                 display: 'inline-flex', alignItems: 'center', gap: 5,
                 padding: '6px 10px', borderRadius: '8px',
-                background: '#ffffff', color: '#1e40af', border: '1px solid #bfdbfe',
+                background: 'var(--bg-card)', color: '#1e40af', border: '1px solid #bfdbfe',
                 fontSize: '11px', fontWeight: 700, textDecoration: 'none',
                 boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
               }}
@@ -637,7 +637,7 @@ export default function LiveDeliveryMap({
       }}>
         {/* Điểm 1: Kho xuất hàng */}
         <div style={{
-          background: '#fff',
+          background: 'var(--bg-card)',
           border: `1.5px solid ${mode === 'shipper' && isBeforePickup ? '#3b82f6' : '#e2e8f0'}`,
           borderRadius: 10,
           padding: 10,
@@ -692,7 +692,7 @@ export default function LiveDeliveryMap({
         </div>
 
         {/* Điểm 2: Shipper phụ trách */}
-        <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid #e2e8f0', borderRadius: 10, padding: 10, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#d97706', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
               <Truck size={13} />
@@ -719,7 +719,7 @@ export default function LiveDeliveryMap({
 
         {/* Điểm 3: Khách hàng & Điểm nhận */}
         <div style={{
-          background: '#fff',
+          background: 'var(--bg-card)',
           border: `1.5px solid ${mode === 'shipper' && isAfterPickup ? '#10b981' : '#e2e8f0'}`,
           borderRadius: 10,
           padding: 10,

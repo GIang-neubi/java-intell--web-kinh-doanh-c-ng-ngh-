@@ -38,7 +38,7 @@ export default class ErrorBoundary extends Component {
           <div style={{
             maxWidth: 520,
             width: '100%',
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             borderRadius: 20,
             border: '1px solid var(--border, #e2e8f0)',
             padding: 36,
@@ -79,7 +79,7 @@ export default class ErrorBoundary extends Component {
 
             {this.state.error?.message && (
               <div style={{
-                background: '#f8fafc',
+                background: 'var(--bg)',
                 border: '1px solid #e2e8f0',
                 borderRadius: 10,
                 padding: '10px 14px',

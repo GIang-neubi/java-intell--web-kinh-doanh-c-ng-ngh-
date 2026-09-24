@@ -16,7 +16,7 @@ export default function Refunds() {
 
   return (
     <AccountLayout activeTab="refunds">
-      <div style={{ background: '#fff', padding: 24, borderRadius: 12 }}>
+      <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 12 }}>
         <h2>Danh sách hoàn tiền</h2>
         {loading ? <p>Đang tải...</p> : (
           refunds.length === 0 ? <p>Chưa có khoản hoàn tiền nào.</p> : (

@@ -178,7 +178,7 @@ export default function Wishlist() {
                     type="button"
                     onClick={() => handleRemove(product.id, product.name)}
                     disabled={isRemoving}
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 38, height: 38, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: '#fff', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all .2s' }}
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 38, height: 38, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer', color: 'var(--text-muted)', transition: 'all .2s' }}
                     title="Xóa khỏi yêu thích"
                     onMouseOver={e => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.borderColor = '#f87171'; e.currentTarget.style.color = '#ef4444'; }}
                     onMouseOut={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}

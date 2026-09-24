@@ -83,13 +83,13 @@ export default function Login() {
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Username</label>
-              <input className="form-input" style={{ background: '#fff', padding: '14px 16px', fontSize: 15 }} placeholder="Nhập tên đăng nhập" value={form.username}
+              <input className="form-input" style={{ background: 'var(--bg-card)', padding: '14px 16px', fontSize: 15 }} placeholder="Nhập tên đăng nhập" value={form.username}
                 onChange={e => setForm(p => ({ ...p, username: e.target.value }))} required />
             </div>
             
             <div className="form-group" style={{ position: 'relative' }}>
               <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Password</label>
-              <input className="form-input" style={{ background: '#fff', padding: '14px 16px', fontSize: 15, paddingRight: '44px' }} type={showPw ? 'text' : 'password'} placeholder="••••••••"
+              <input className="form-input" style={{ background: 'var(--bg-card)', padding: '14px 16px', fontSize: 15, paddingRight: '44px' }} type={showPw ? 'text' : 'password'} placeholder="••••••••"
                 value={form.password} onChange={e => setForm(p => ({ ...p, password: e.target.value }))} required />
               <button type="button" onClick={() => setShowPw(p => !p)}
                 style={{ position: 'absolute', right: '14px', top: '38px', color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>
@@ -113,13 +113,13 @@ export default function Login() {
             Chưa có tài khoản? <Link to="/register" className="auth-link">Đăng ký ngay</Link>
           </div>
           
-          <div style={{ marginTop: 'var(--space-8)', padding: '14px', background: '#f8fafc', borderRadius: 'var(--radius)', fontSize: 12, border: '1px solid var(--border)' }}>
+          <div style={{ marginTop: 'var(--space-8)', padding: '14px', background: 'var(--bg)', borderRadius: 'var(--radius)', fontSize: 12, border: '1px solid var(--border)' }}>
             <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>Tài khoản demo thử nghiệm:</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <button
                 type="button"
                 onClick={() => setForm({ username: 'admin', password: '12345678' })}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--bg-card)', border: '1px solid #cbd5e1', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
               >
                 <span>👑 <strong>Admin:</strong> admin / 12345678</span>
                 <span style={{ color: '#0284c7', fontWeight: 600 }}>Điền nhanh</span>
@@ -127,7 +127,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setForm({ username: 'shipper1', password: '12345678' })}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: '#ffffff', border: '1px solid #fed7aa', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--bg-card)', border: '1px solid #fed7aa', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
               >
                 <span>🚚 <strong>Shipper 1:</strong> shipper1 / 12345678</span>
                 <span style={{ color: '#ea580c', fontWeight: 600 }}>Điền nhanh</span>
@@ -135,7 +135,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setForm({ username: 'shipper2', password: '12345678' })}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: '#ffffff', border: '1px solid #fed7aa', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'var(--bg-card)', border: '1px solid #fed7aa', borderRadius: '6px', cursor: 'pointer', textAlign: 'left', fontSize: '12px' }}
               >
                 <span>🚚 <strong>Shipper 2:</strong> shipper2 / 12345678</span>
                 <span style={{ color: '#ea580c', fontWeight: 600 }}>Điền nhanh</span>

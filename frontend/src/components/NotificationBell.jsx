@@ -209,7 +209,7 @@ export default function NotificationBell({ isAdmin = false }) {
             right: 0,
             width: 360,
             maxWidth: '92vw',
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             borderRadius: '16px',
             border: '1px solid var(--border)',
             boxShadow: '0 12px 36px rgba(0, 0, 0, 0.15)',
@@ -226,7 +226,7 @@ export default function NotificationBell({ isAdmin = false }) {
               justifyContent: 'space-between',
               padding: '14px 16px',
               borderBottom: '1px solid var(--border)',
-              background: '#ffffff',
+              background: 'var(--bg-card)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -278,7 +278,7 @@ export default function NotificationBell({ isAdmin = false }) {
               display: 'flex',
               gap: 8,
               padding: '8px 16px',
-              background: '#f8fafc',
+              background: 'var(--bg)',
               borderBottom: '1px solid var(--border)',
             }}
           >
@@ -453,7 +453,7 @@ export default function NotificationBell({ isAdmin = false }) {
               gap: 6,
               padding: '12px 16px',
               borderTop: '1px solid var(--border)',
-              background: '#f8fafc',
+              background: 'var(--bg)',
               color: 'var(--primary)',
               fontWeight: 800,
               fontSize: '12px',

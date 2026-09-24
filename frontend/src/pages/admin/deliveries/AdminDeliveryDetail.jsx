@@ -132,7 +132,7 @@ export default function AdminDeliveryDetail() {
           <Link
             to="/admin/deliveries"
             style={{
-              width: 40, height: 40, borderRadius: '12px', background: '#ffffff',
+              width: 40, height: 40, borderRadius: '12px', background: 'var(--bg-card)',
               border: '1px solid var(--border)', color: 'var(--text-primary)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none'
             }}
@@ -206,7 +206,7 @@ export default function AdminDeliveryDetail() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: '6px',
               padding: '9px 14px', borderRadius: '10px',
-              background: '#ffffff', color: 'var(--text-primary)', border: '1px solid var(--border)',
+              background: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border)',
               fontSize: '13px', fontWeight: 600, textDecoration: 'none'
             }}
           >
@@ -375,7 +375,7 @@ export default function AdminDeliveryDetail() {
 
             <div style={{
               marginTop: '4px', padding: '10px', borderRadius: '10px',
-              background: '#f8fafc', border: '1px solid #f1f5f9',
+              background: 'var(--bg)', border: '1px solid #f1f5f9',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between'
             }}>
               <div>
@@ -484,7 +484,7 @@ export default function AdminDeliveryDetail() {
 
       {/* Stepper Tracking Hub */}
       <div style={{
-        background: '#ffffff', border: '1px solid var(--border)', borderRadius: '16px',
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px',
         padding: '24px', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
       }}>
         <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '16px' }}>
@@ -534,7 +534,7 @@ export default function AdminDeliveryDetail() {
 
               <div style={{
                 fontFamily: 'monospace', fontSize: '24px', fontWeight: 900,
-                letterSpacing: '6px', color: '#065f46', background: '#ffffff',
+                letterSpacing: '6px', color: '#065f46', background: 'var(--bg-card)',
                 padding: '6px 18px', borderRadius: '10px', border: '1px solid #10b981'
               }}>
                 {delivery.confirmationOtp}
@@ -591,7 +591,7 @@ export default function AdminDeliveryDetail() {
                     rel="noreferrer"
                     style={{
                       padding: '7px 10px', borderRadius: '8px',
-                      background: '#ffffff', color: '#7e22ce', border: '1px solid #d8b4fe',
+                      background: 'var(--bg-card)', color: '#7e22ce', border: '1px solid #d8b4fe',
                       fontSize: '12px', fontWeight: 700, textDecoration: 'none',
                       display: 'inline-flex', alignItems: 'center', gap: '4px'
                     }}
@@ -604,7 +604,7 @@ export default function AdminDeliveryDetail() {
 
               <div style={{
                 display: 'flex', alignItems: 'center', gap: '14px',
-                padding: '10px 12px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e9d5ff'
+                padding: '10px 12px', borderRadius: '10px', background: 'var(--bg-card)', border: '1px solid #e9d5ff'
               }}>
                 <img
                   src={resolveImageUrl(delivery.proofImage)}
@@ -667,7 +667,7 @@ export default function AdminDeliveryDetail() {
 
       {/* Package Products List */}
       <div style={{
-        background: '#ffffff', border: '1px solid var(--border)', borderRadius: '16px',
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px',
         padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
       }}>
         <div style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', marginBottom: '16px' }}>

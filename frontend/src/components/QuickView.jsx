@@ -60,7 +60,7 @@ export default function QuickView({ product, onClose }) {
           type="button"
           onClick={onClose}
           aria-label="Đóng"
-          style={{ position: 'absolute', top: 12, right: 12, zIndex: 10, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '1px solid var(--border)', background: '#fff', cursor: 'pointer', color: 'var(--text-muted)' }}
+          style={{ position: 'absolute', top: 12, right: 12, zIndex: 10, width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', border: '1px solid var(--border)', background: 'var(--bg-card)', cursor: 'pointer', color: 'var(--text-muted)' }}
         >
           <X size={16} />
         </button>
@@ -132,7 +132,7 @@ export default function QuickView({ product, onClose }) {
               <button
                 onClick={handleWishlist}
                 title="Yêu thích"
-                style={{ width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', background: '#fff', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text-muted)', cursor: 'pointer' }}
               >
                 <Heart size={16} />
               </button>

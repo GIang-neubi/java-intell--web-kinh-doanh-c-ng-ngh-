@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useCartStore, useAuthStore } from '../store';
 import { fetchCategories } from '../api/categories';
 import NotificationBell from './NotificationBell';
+import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -152,6 +153,8 @@ export default function Header() {
             {totalItems > 0 && <span className="hg-action-badge">{totalItems}</span>}
           </Link>
 
+          <ThemeToggle />
+
           {isAuthenticated && <NotificationBell />}
 
           {isAuthenticated ? (
@@ -258,9 +261,9 @@ export default function Header() {
           align-items: center;
           justify-content: space-between;
           gap: var(--space-6);
-          max-width: var(--container);
+          max-width: 1400px;
           margin: 0 auto;
-          background: rgba(255, 255, 255, 0.88);
+          background: var(--bg-header);
           backdrop-filter: blur(16px);
           border: 1px solid rgba(0, 0, 0, 0.05);
           border-radius: var(--radius-full);
@@ -340,7 +343,7 @@ export default function Header() {
           position: absolute;
           top: calc(100% + 8px);
           left: 0;
-          background: #fff;
+          background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--radius-lg);
           box-shadow: var(--shadow-lg);
@@ -433,7 +436,7 @@ export default function Header() {
           position: absolute;
           top: calc(100% + 12px);
           right: 0;
-          background: #fff;
+          background: var(--bg-card);
           border-radius: 16px;
           padding: 8px;
           box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
@@ -481,7 +484,7 @@ export default function Header() {
           justify-content: center;
           border-radius: 10px;
           border: 1px solid var(--border);
-          background: #fff;
+          background: var(--bg-card);
           color: var(--text-primary);
           cursor: pointer;
         }
@@ -490,7 +493,7 @@ export default function Header() {
           top: 72px;
           left: 0;
           right: 0;
-          background: #fff;
+          background: var(--bg-card);
           border-top: 1px solid var(--border);
           padding: var(--space-4);
           z-index: 99;

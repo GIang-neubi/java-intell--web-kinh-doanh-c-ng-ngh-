@@ -435,13 +435,13 @@ export default function ShipperDeliveryDetail() {
 
       {/* Top Header Card */}
       <div style={{
-        background: '#ffffff', border: '1px solid var(--border)', borderRadius: '14px',
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px',
         padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px'
       }}>
         <Link
           to="/shipper"
           style={{
-            width: 36, height: 36, borderRadius: '10px', background: '#f8fafc',
+            width: 36, height: 36, borderRadius: '10px', background: 'var(--bg)',
             border: '1px solid #e2e8f0', color: 'var(--text-primary)',
             display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none'
           }}
@@ -539,7 +539,7 @@ export default function ShipperDeliveryDetail() {
       {/* Hiển thị khi đơn đã hoàn tất hoặc thất bại -> GPS đã tự động ngắt */}
       {['DELIVERED', 'DELIVERY_FAILED', 'CANCELLED'].includes(delivery.status) && (
         <div style={{
-          background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px',
+          background: 'var(--bg)', border: '1px solid #e2e8f0', borderRadius: '12px',
           padding: '10px 14px', fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: 6
         }}>
           <CheckCircle2 size={14} style={{ color: '#10b981' }} />
@@ -620,7 +620,7 @@ export default function ShipperDeliveryDetail() {
             style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '12px 18px', borderRadius: '12px',
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               color: isBeforePickup ? '#1e40af' : '#047857',
               fontSize: '13px', fontWeight: 800, textDecoration: 'none',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
@@ -649,7 +649,7 @@ export default function ShipperDeliveryDetail() {
           {/* STAGE 1 (PRIMARY): WAREHOUSE PICKUP */}
           {delivery.warehouseName && (
             <div style={{
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               border: '2px solid #3b82f6',
               borderRadius: '16px',
               padding: '16px',
@@ -736,7 +736,7 @@ export default function ShipperDeliveryDetail() {
 
           {/* STAGE 2 (UPCOMING): CUSTOMER RECEIVER */}
           <div style={{
-            background: '#ffffff', border: '1px solid var(--border)', borderRadius: '16px',
+            background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px',
             padding: '16px', opacity: 0.9
           }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '8px' }}>
@@ -794,7 +794,7 @@ export default function ShipperDeliveryDetail() {
         <>
           {/* STAGE 2 (PRIMARY): CUSTOMER RECEIVER */}
           <div style={{
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             border: isCompleted ? '1px solid var(--border)' : '2px solid #059669',
             borderRadius: '16px',
             padding: '16px',
@@ -877,7 +877,7 @@ export default function ShipperDeliveryDetail() {
           {/* WAREHOUSE (ORIGIN / COMPLETED) */}
           {delivery.warehouseName && (
             <div style={{
-              background: '#f8fafc', border: '1px solid var(--border)', borderRadius: '16px',
+              background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '16px',
               padding: '14px 16px', opacity: 0.88
             }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
@@ -900,7 +900,7 @@ export default function ShipperDeliveryDetail() {
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '4px',
                       padding: '5px 10px', borderRadius: '8px',
-                      background: '#ffffff', color: '#475569', border: '1px solid #cbd5e1',
+                      background: 'var(--bg-card)', color: '#475569', border: '1px solid #cbd5e1',
                       fontSize: '11px', fontWeight: 600, textDecoration: 'none'
                     }}
                   >
@@ -924,7 +924,7 @@ export default function ShipperDeliveryDetail() {
       {/* Products list card */}
       {delivery.items && delivery.items.length > 0 && (
         <div style={{
-          background: '#ffffff', border: '1px solid var(--border)', borderRadius: '16px',
+          background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px',
           padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
         }}>
           <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-muted)', display: 'block', marginBottom: '8px' }}>
@@ -988,7 +988,7 @@ export default function ShipperDeliveryDetail() {
         {/* Proof of Delivery Card when status is DELIVERED */}
         {delivery.status === 'DELIVERED' && (
           <div style={{
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             border: '2px solid #a855f7',
             borderRadius: '16px',
             padding: '18px',
@@ -1207,7 +1207,7 @@ export default function ShipperDeliveryDetail() {
           <form
             onSubmit={handleComplete}
             style={{
-              background: '#ffffff', border: '2px solid #10b981', borderRadius: '16px',
+              background: 'var(--bg-card)', border: '2px solid #10b981', borderRadius: '16px',
               padding: '18px', boxShadow: '0 6px 20px rgba(16, 185, 129, 0.15)',
               display: 'flex', flexDirection: 'column', gap: '14px'
             }}
@@ -1248,7 +1248,7 @@ export default function ShipperDeliveryDetail() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <label style={{
                   flex: 1, padding: '10px', borderRadius: '10px', border: '1px dashed #cbd5e1',
-                  background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600,
+                  background: 'var(--bg)', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600,
                   textAlign: 'center', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}>
                   <Camera size={16} />
@@ -1336,7 +1336,7 @@ export default function ShipperDeliveryDetail() {
 
       {/* Package Items */}
       <div style={{
-        background: '#ffffff', border: '1px solid var(--border)', borderRadius: '16px',
+        background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '16px',
         padding: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)'
       }}>
         <div style={{
@@ -1381,7 +1381,7 @@ export default function ShipperDeliveryDetail() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px'
         }}>
           <div style={{
-            background: '#ffffff', borderRadius: '16px', maxWidth: '380px', width: '100%',
+            background: 'var(--bg-card)', borderRadius: '16px', maxWidth: '380px', width: '100%',
             padding: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid var(--border)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -1406,7 +1406,7 @@ export default function ShipperDeliveryDetail() {
                 <select
                   value={failReason}
                   onChange={(e) => setFailReason(e.target.value)}
-                  style={{ width: '100%', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: '#ffffff', fontSize: '13px' }}
+                  style={{ width: '100%', padding: '10px 12px', borderRadius: '10px', border: '1px solid var(--border)', background: 'var(--bg-card)', fontSize: '13px' }}
                 >
                   {FAILURE_REASONS.map((r) => (
                     <option key={r} value={r}>{r}</option>
@@ -1456,7 +1456,7 @@ export default function ShipperDeliveryDetail() {
           display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px'
         }}>
           <div style={{
-            background: '#ffffff', borderRadius: '16px', maxWidth: '420px', width: '100%',
+            background: 'var(--bg-card)', borderRadius: '16px', maxWidth: '420px', width: '100%',
             padding: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.3)', border: '1px solid var(--border)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -1494,7 +1494,7 @@ export default function ShipperDeliveryDetail() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <label style={{
                   flex: 1, padding: '12px', borderRadius: '10px', border: '1px dashed #cbd5e1',
-                  background: '#f8fafc', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600,
+                  background: 'var(--bg)', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 600,
                   textAlign: 'center', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
                 }}>
                   <Camera size={16} />

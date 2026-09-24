@@ -110,10 +110,10 @@ export default function Footer() {
       </div>
 
       <style>{`
-        .hg-footer { background: #fff; border-top: 1px solid var(--border); }
+        .hg-footer { background: var(--bg-card); border-top: 1px solid var(--border); }
         .hg-footer-cta { background: var(--primary); color: #fff; padding: var(--space-10) 0; }
         .hg-footer-cta-grid { display: flex; justify-content: space-between; align-items: center; gap: var(--space-8); flex-wrap: wrap; }
-        .hg-footer-cta-btn { background: #fff; color: var(--primary); padding: 12px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: var(--text-sm); text-decoration: none; transition: transform var(--transition); }
+        .hg-footer-cta-btn { background: var(--bg-card); color: var(--primary); padding: 12px 28px; border-radius: var(--radius-full); font-weight: 700; font-size: var(--text-sm); text-decoration: none; transition: transform var(--transition); }
         .hg-footer-cta-btn:hover { transform: scale(0.97); }
         .hg-footer-grid { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: var(--space-16); margin-bottom: var(--space-16); }
         @media (max-width: 1024px) {

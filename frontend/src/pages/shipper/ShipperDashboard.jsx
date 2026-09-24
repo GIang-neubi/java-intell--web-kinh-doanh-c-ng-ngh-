@@ -159,7 +159,7 @@ export default function ShipperDashboard() {
           onClick={load}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '4px',
-            background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px',
+            background: 'var(--bg)', border: '1px solid #e2e8f0', borderRadius: '8px',
             padding: '6px 10px', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', cursor: 'pointer'
           }}
           title="Làm mới danh sách"
@@ -176,19 +176,19 @@ export default function ShipperDashboard() {
         gap: '8px',
         marginBottom: '12px'
       }}>
-        <div style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Hôm nay</div>
           <div style={{ fontSize: '16px', fontWeight: 900, color: '#0a3d8f', marginTop: '2px' }}>{stats?.todayAssigned ?? 0}</div>
         </div>
-        <div style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: '#0369a1', textTransform: 'uppercase' }}>Đang giao</div>
           <div style={{ fontSize: '16px', fontWeight: 900, color: '#0284c7', marginTop: '2px' }}>{stats?.inTransit ?? 0}</div>
         </div>
-        <div style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: '#047857', textTransform: 'uppercase' }}>Thành công</div>
           <div style={{ fontSize: '16px', fontWeight: 900, color: '#059669', marginTop: '2px' }}>{stats?.delivered ?? 0}</div>
         </div>
-        <div style={{ background: '#ffffff', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
+        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '12px', padding: '10px 8px', textAlign: 'center' }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: '#b91c1c', textTransform: 'uppercase' }}>Thất bại</div>
           <div style={{ fontSize: '16px', fontWeight: 900, color: '#dc2626', marginTop: '2px' }}>{stats?.failed ?? 0}</div>
         </div>
@@ -284,7 +284,7 @@ export default function ShipperDashboard() {
                     load();
                   }}
                   style={{
-                    padding: '6px 14px', borderRadius: '8px', background: '#ffffff',
+                    padding: '6px 14px', borderRadius: '8px', background: 'var(--bg-card)',
                     color: '#ea580c', border: 'none', fontSize: '12px', fontWeight: 800, cursor: 'pointer'
                   }}
                 >
@@ -382,7 +382,7 @@ export default function ShipperDashboard() {
         </div>
       ) : items.length === 0 ? (
         <div style={{
-          textAlign: 'center', padding: '60px 20px', background: '#f8fafc',
+          textAlign: 'center', padding: '60px 20px', background: 'var(--bg)',
           borderRadius: '16px', border: '1px dashed #cbd5e1'
         }}>
           <Package size={44} style={{ color: '#94a3b8', margin: '0 auto 10px' }} />
@@ -583,7 +583,7 @@ export default function ShipperDashboard() {
                     to={`/shipper/${d.id}`}
                     style={{
                       width: 42, height: 42, borderRadius: '12px',
-                      background: '#f8fafc', border: '1px solid #e2e8f0',
+                      background: 'var(--bg)', border: '1px solid #e2e8f0',
                       color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center',
                       textDecoration: 'none', flexShrink: 0
                     }}

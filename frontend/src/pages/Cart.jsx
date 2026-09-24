@@ -279,7 +279,7 @@ export default function Cart() {
       {/* Clear cart confirmation modal */}
       {showClearConfirm && (
         <div className="modal-overlay" onClick={() => setShowClearConfirm(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 'var(--space-4)' }}>
-          <div className="modal-content" style={{ background: '#fff', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', maxWidth: 400, width: '100%', boxShadow: 'var(--shadow-lg)' }} onClick={e => e.stopPropagation()}>
+          <div className="modal-content" style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)', maxWidth: 400, width: '100%', boxShadow: 'var(--shadow-lg)' }} onClick={e => e.stopPropagation()}>
             <div style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 'var(--space-3)' }}>Xóa toàn bộ giỏ hàng?</div>
             <div style={{ color: 'var(--text-secondary)', marginBottom: 'var(--space-6)', fontSize: 'var(--text-sm)' }}>Hành động này không thể hoàn tác. Tất cả {totalItems} sản phẩm sẽ bị xóa.</div>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>

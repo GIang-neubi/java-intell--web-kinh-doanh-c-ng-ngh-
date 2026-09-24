@@ -202,7 +202,7 @@ export default function Notifications() {
               gap: 6,
               padding: '8px 14px',
               borderRadius: '10px',
-              background: '#f8fafc',
+              background: 'var(--bg)',
               border: '1px solid var(--border)',
               color: 'var(--text-secondary)',
               fontSize: '12px',
@@ -302,7 +302,7 @@ export default function Notifications() {
         <div style={{
           textAlign: 'center',
           padding: '60px 20px',
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           borderRadius: '16px',
           border: '1px dashed var(--border)'
         }}>

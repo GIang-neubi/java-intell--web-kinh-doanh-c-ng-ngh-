@@ -39,7 +39,7 @@ function createWarehousePinIcon(label = 'Kho H&G') {
           <div style="
             width: 10px;
             height: 10px;
-            background: #ffffff;
+            background: var(--bg-card);
             border-radius: 50%;
             transform: rotate(45deg);
           "></div>
@@ -340,9 +340,9 @@ export default function WarehouseMapPicker({
   }, [name, onLocationChange]);
 
   return (
-    <div style={{ marginTop: 24, border: '1px solid var(--border)', borderRadius: 'var(--radius-xl, 14px)', overflow: 'hidden', background: '#fff' }}>
+    <div style={{ marginTop: 24, border: '1px solid var(--border)', borderRadius: 'var(--radius-xl, 14px)', overflow: 'hidden', background: 'var(--bg-card)' }}>
       {/* Header bar điều khiển bản đồ */}
-      <div style={{ padding: '16px 20px', background: '#f8fafc', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+      <div style={{ padding: '16px 20px', background: 'var(--bg)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: '#eff6ff', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <MapPin size={20} />

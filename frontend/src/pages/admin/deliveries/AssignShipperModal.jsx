@@ -204,7 +204,7 @@ export default function AssignShipperModal({ delivery, isOpen, onClose, onAssign
               onClick={onClose}
               style={{
                 padding: '9px 16px', borderRadius: '10px',
-                background: '#ffffff', border: '1px solid var(--border)',
+                background: 'var(--bg-card)', border: '1px solid var(--border)',
                 color: 'var(--text-secondary)', fontSize: '13px', fontWeight: 600, cursor: 'pointer'
               }}
             >

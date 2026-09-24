@@ -241,7 +241,7 @@ export default function Products() {
         {/* Search bar (desktop) */}
         <div className="products-search-bar" style={{ marginBottom: 'var(--space-6)' }}>
           <form onSubmit={handleSearchSubmit} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', border: '1px solid var(--border)', borderRadius: 'var(--radius-full)', background: '#fff', padding: '0 18px', gap: 8 }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', border: '1px solid var(--border)', borderRadius: 'var(--radius-full)', background: 'var(--bg-card)', padding: '0 18px', gap: 8 }}>
               <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
               <input
                 type="text"

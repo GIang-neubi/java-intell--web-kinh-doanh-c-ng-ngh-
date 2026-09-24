@@ -162,7 +162,7 @@ export default function Home() {
                     maxWidth: '380px'
                   }}
                 >
-                  <div style={{ background: '#fff', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)', width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--space-5)' }}>
+                  <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)', width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--space-5)' }}>
                     <img
                       src={resolveImageUrl(p.image)}
                       alt={p.name}
@@ -231,7 +231,7 @@ export default function Home() {
 
       {/* 2. Categories Section */}
       {categories.length > 0 && (
-        <section className="section" style={{ background: '#fff', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
+        <section className="section" style={{ background: 'var(--bg-card)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
           <div className="container">
             <div className="section-header" style={{ justifyContent: 'center', textAlign: 'center', flexDirection: 'column' }}>
               <div className="section-eyebrow">Danh mục</div>

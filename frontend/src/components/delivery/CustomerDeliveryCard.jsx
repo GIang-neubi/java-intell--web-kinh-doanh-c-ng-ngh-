@@ -276,7 +276,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
   return (
     <div
       style={{
-        background: '#ffffff',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)',
         borderRadius: '20px',
         overflow: 'hidden',
@@ -381,7 +381,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
               alignItems: 'center',
               gap: '24px',
               flexWrap: 'wrap',
-              background: '#f8fafc',
+              background: 'var(--bg)',
               border: '1px solid #e2e8f0',
               padding: '12px 20px',
               borderRadius: '14px',
@@ -562,7 +562,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
       </div>
 
       {/* MAP SECTION */}
-      <div style={{ borderTop: '1px solid #f1f5f9', background: '#f8fafc', padding: '24px 28px' }}>
+      <div style={{ borderTop: '1px solid #f1f5f9', background: 'var(--bg)', padding: '24px 28px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#0a3d8f' }}>
@@ -578,7 +578,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
               type="button"
               onClick={loadDelivery}
               style={{
-                background: '#ffffff',
+                background: 'var(--bg-card)',
                 border: '1px solid #e2e8f0',
                 borderRadius: '8px',
                 padding: '5px 10px',
@@ -647,7 +647,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
             {/* Visual Route Flow: 🛵 Shipper ↓ ↓ 📍 Customer */}
             <div
               style={{
-                background: '#f8fafc',
+                background: 'var(--bg)',
                 border: '1px solid #e2e8f0',
                 borderRadius: '16px',
                 padding: '20px',
@@ -774,7 +774,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
         ) : (
           <div
             style={{
-              background: '#f8fafc',
+              background: 'var(--bg)',
               border: '1px solid #e2e8f0',
               borderRadius: '14px',
               padding: '16px 20px',
@@ -958,7 +958,7 @@ export default function CustomerDeliveryCard({ order, onUpdated }) {
                 position: 'absolute',
                 top: 12,
                 right: 12,
-                background: '#ffffff',
+                background: 'var(--bg-card)',
                 border: 'none',
                 borderRadius: '50%',
                 width: 32,

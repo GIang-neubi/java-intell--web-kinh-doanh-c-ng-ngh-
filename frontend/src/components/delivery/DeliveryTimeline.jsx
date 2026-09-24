@@ -142,7 +142,7 @@ export default function DeliveryTimeline({ orderId, onUpdated, collapsible = fal
 
   if (loading) {
     return (
-      <div style={{ padding: '24px', borderRadius: '16px', background: '#f8fafc', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '13px', color: 'var(--text-muted)' }}>
+      <div style={{ padding: '24px', borderRadius: '16px', background: 'var(--bg)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '13px', color: 'var(--text-muted)' }}>
         <div className="spinner" style={{ width: 18, height: 18 }} />
         <span>Đang kết nối hành trình vận chuyển thời gian thực...</span>
       </div>
@@ -280,7 +280,7 @@ export default function DeliveryTimeline({ orderId, onUpdated, collapsible = fal
               {delivery.nextDeliverySchedule && (
                 <div style={{
                   marginTop: '10px', padding: '8px 12px', borderRadius: '8px',
-                  background: '#ffffff', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', gap: '6px',
+                  background: 'var(--bg-card)', border: '1px solid #fecdd3', display: 'flex', alignItems: 'center', gap: '6px',
                   color: '#0a3d8f', fontWeight: 600, fontSize: '12px'
                 }}>
                   <Clock size={14} />

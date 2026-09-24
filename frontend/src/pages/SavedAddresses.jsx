@@ -231,7 +231,7 @@ export default function SavedAddresses() {
         <div style={{
           textAlign: 'center',
           padding: '60px 20px',
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           borderRadius: '16px',
           border: '1px dashed var(--border)'
         }}>
@@ -282,7 +282,7 @@ export default function SavedAddresses() {
             <div
               key={addr.id}
               style={{
-                background: '#ffffff',
+                background: 'var(--bg-card)',
                 border: addr.isDefault ? '2px solid #3b82f6' : '1px solid var(--border)',
                 borderRadius: '16px',
                 padding: '20px 22px',
@@ -357,7 +357,7 @@ export default function SavedAddresses() {
                       gap: 4,
                       padding: '6px 12px',
                       borderRadius: '8px',
-                      background: '#f8fafc',
+                      background: 'var(--bg)',
                       border: '1px solid var(--border)',
                       fontSize: '12px',
                       fontWeight: 700,
@@ -463,7 +463,7 @@ export default function SavedAddresses() {
         >
           <div
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               borderRadius: '20px',
               maxWidth: 540,
               width: '100%',
@@ -644,7 +644,7 @@ export default function SavedAddresses() {
                 alignItems: 'center',
                 gap: 10,
                 padding: '12px 14px',
-                background: '#f8fafc',
+                background: 'var(--bg)',
                 borderRadius: '12px',
                 marginBottom: '24px',
                 border: '1px solid var(--border)'
@@ -671,7 +671,7 @@ export default function SavedAddresses() {
                     padding: '10px 20px',
                     borderRadius: '10px',
                     border: '1px solid var(--border)',
-                    background: '#ffffff',
+                    background: 'var(--bg-card)',
                     color: 'var(--text-secondary)',
                     fontWeight: 700,
                     fontSize: '13px',

@@ -224,7 +224,7 @@ export default function WarrantyCenter() {
             ) : filteredProducts.length === 0 ? (
               <div
                 style={{
-                  background: '#ffffff',
+                  background: 'var(--bg-card)',
                   border: '1px dashed #cbd5e1',
                   borderRadius: 16,
                   padding: '48px 24px',
@@ -279,7 +279,7 @@ export default function WarrantyCenter() {
                           width: 72,
                           height: 72,
                           borderRadius: 12,
-                          background: '#f8fafc',
+                          background: 'var(--bg)',
                           overflow: 'hidden',
                           flexShrink: 0,
                           border: '1px solid #e2e8f0',
@@ -416,7 +416,7 @@ export default function WarrantyCenter() {
             {lookupResult && (
               <div
                 style={{
-                  background: '#f8fafc',
+                  background: 'var(--bg)',
                   border: '1px solid #bfdbfe',
                   borderRadius: 14,
                   padding: 22,
@@ -464,21 +464,21 @@ export default function WarrantyCenter() {
                 ⭐ Cam kết bảo hành vàng H&G Care
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-                <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 12, border: '1px solid #e2e8f0' }}>
                   <div style={{ fontWeight: 800, fontSize: 14, color: '#0284c7', marginBottom: 6 }}>1 Đổi 1 Trong 30 Ngày</div>
                   <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     Đổi mới ngay lập tức nếu thiết bị gặp lỗi kỹ thuật từ nhà sản xuất trong vòng 30 ngày đầu sử dụng.
                   </p>
                 </div>
 
-                <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 12, border: '1px solid #e2e8f0' }}>
                   <div style={{ fontWeight: 800, fontSize: 14, color: '#059669', marginBottom: 6 }}>Chính Hãng 100%</div>
                   <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     Bảo hành toàn diện 12–24 tháng tại các trung tâm bảo hành ủy quyền của Sony, Canon, Fujifilm, Apple, Asus trên toàn quốc.
                   </p>
                 </div>
 
-                <div style={{ padding: 16, background: '#f8fafc', borderRadius: 12, border: '1px solid #e2e8f0' }}>
+                <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 12, border: '1px solid #e2e8f0' }}>
                   <div style={{ fontWeight: 800, fontSize: 14, color: '#7c3aed', marginBottom: 6 }}>Hỗ Trợ Thiết Bị Thay Thế</div>
                   <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     Hỗ trợ mượn máy ảnh hoặc ống kính tương đương trong thời gian sản phẩm gửi về hãng bảo dưỡng.

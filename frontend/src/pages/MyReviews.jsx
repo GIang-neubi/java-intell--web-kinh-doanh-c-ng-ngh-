@@ -162,7 +162,7 @@ export default function MyReviews() {
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius-xl)',
                   overflow: 'hidden',
-                  background: '#fff',
+                  background: 'var(--bg-card)',
                   transition: 'box-shadow 0.2s',
                 }}
               >
@@ -303,7 +303,7 @@ export default function MyReviews() {
                   disabled={page === 0}
                   style={{
                     width: 36, height: 36, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)',
-                    background: '#fff', cursor: page === 0 ? 'not-allowed' : 'pointer',
+                    background: 'var(--bg-card)', cursor: page === 0 ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     opacity: page === 0 ? 0.4 : 1,
                   }}
@@ -319,7 +319,7 @@ export default function MyReviews() {
                   disabled={page >= totalPages - 1}
                   style={{
                     width: 36, height: 36, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)',
-                    background: '#fff', cursor: page >= totalPages - 1 ? 'not-allowed' : 'pointer',
+                    background: 'var(--bg-card)', cursor: page >= totalPages - 1 ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     opacity: page >= totalPages - 1 ? 0.4 : 1,
                   }}
@@ -342,7 +342,7 @@ export default function MyReviews() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            style={{ background: '#fff', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8)', maxWidth: 400, width: '100%', boxShadow: 'var(--shadow-xl)' }}
+            style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8)', maxWidth: 400, width: '100%', boxShadow: 'var(--shadow-xl)' }}
           >
             <div style={{ fontWeight: 800, fontSize: 18, marginBottom: 8 }}>Xóa đánh giá?</div>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', marginBottom: 'var(--space-6)', lineHeight: 1.6 }}>

@@ -15,7 +15,7 @@ export default function Returns() {
 
   return (
     <AccountLayout activeTab="returns">
-      <div style={{ background: '#fff', padding: 24, borderRadius: 12 }}>
+      <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 12 }}>
         <h2>Danh sách trả hàng</h2>
         {loading ? <p>Đang tải...</p> : (
           returns.length === 0 ? <p>Chưa có yêu cầu trả hàng nào.</p> : (

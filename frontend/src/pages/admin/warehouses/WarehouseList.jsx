@@ -457,7 +457,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                   borderRadius: 8,
                   border: '1px solid var(--border)',
                   fontSize: 13,
-                  background: '#ffffff',
+                  background: 'var(--bg-card)',
                 }}
               >
                 <option value="ALL">Tất cả trạng thái</option>
@@ -482,7 +482,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
             <div className="card" style={{ overflow: 'hidden', padding: 0 }}>
               <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <tr style={{ background: 'var(--bg)', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     <th style={{ padding: '12px 16px' }}>Mã kho</th>
                     <th style={{ padding: '12px 16px' }}>Tên kho hàng</th>
                     <th style={{ padding: '12px 16px' }}>Địa chỉ & Liên hệ</th>
@@ -665,7 +665,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                     border: '1px solid var(--border)',
                     fontSize: 14,
                     fontWeight: 600,
-                    background: '#ffffff',
+                    background: 'var(--bg-card)',
                   }}
                 >
                   <option value="">-- Chọn kho hàng nhận sản phẩm --</option>
@@ -727,7 +727,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                       left: 0,
                       right: 0,
                       zIndex: 100,
-                      background: '#ffffff',
+                      background: 'var(--bg-card)',
                       border: '1px solid var(--border)',
                       borderRadius: 10,
                       boxShadow: '0 10px 25px rgba(0,0,0,0.12)',
@@ -797,14 +797,14 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                 </div>
 
                 {receiptItems.length === 0 ? (
-                  <div style={{ padding: '30px 20px', textAlign: 'center', background: '#f8fafc', borderRadius: 10, border: '1px dashed #cbd5e1', color: 'var(--text-muted)', fontSize: 13 }}>
+                  <div style={{ padding: '30px 20px', textAlign: 'center', background: 'var(--bg)', borderRadius: 10, border: '1px dashed #cbd5e1', color: 'var(--text-muted)', fontSize: 13 }}>
                     Chưa có sản phẩm nào được chọn. Hãy tìm kiếm ở trên để thêm sản phẩm vào phiếu nhập.
                   </div>
                 ) : (
                   <div style={{ border: '1px solid #e2e8f0', borderRadius: 10, overflow: 'hidden' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                       <thead>
-                        <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                        <tr style={{ background: 'var(--bg)', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                           <th style={{ padding: '10px 12px' }}>Sản phẩm</th>
                           <th style={{ padding: '10px 12px', width: 90 }}>Tồn hiện tại</th>
                           <th style={{ padding: '10px 12px', width: 120 }}>SL nhập</th>
@@ -938,7 +938,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
               </div>
             </div>
 
-            <div className="card" style={{ padding: 20, background: '#f8fafc' }}>
+            <div className="card" style={{ padding: 20, background: 'var(--bg)' }}>
               <h4 style={{ margin: '0 0 8px', fontSize: 13, fontWeight: 800, color: '#0a3d8f' }}>
                 💡 Quy tắc quản lý kho H&G
               </h4>
@@ -965,7 +965,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
             <div className="card" style={{ overflow: 'hidden', padding: 0 }}>
               <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead>
-                  <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  <tr style={{ background: 'var(--bg)', borderBottom: '1px solid #e2e8f0', textAlign: 'left', fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
                     <th style={{ padding: '12px 16px', width: 60 }}>#</th>
                     <th style={{ padding: '12px 16px' }}>Sản phẩm</th>
                     <th style={{ padding: '12px 16px', textAlign: 'center' }}>Tồn trước</th>
@@ -1049,7 +1049,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
               width: '100%',
               maxWidth: '480px',
               height: '100%',
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               boxShadow: '-4px 0 25px rgba(0,0,0,0.15)',
               display: 'flex',
               flexDirection: 'column',
@@ -1125,7 +1125,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                   </div>
 
                   {/* GPS Coordinates & Google Maps Link */}
-                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: 16 }}>
+                  <div style={{ background: 'var(--bg)', border: '1px solid #e2e8f0', borderRadius: 12, padding: 16 }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: '#0a3d8f', textTransform: 'uppercase', marginBottom: 8 }}>
                       TỌA ĐỘ GPS (DÙNG ĐỂ TÍNH PHÍ SHIPPER)
                     </div>
@@ -1144,7 +1144,7 @@ export default function WarehouseList({ defaultTab = 'list' }) {
                             gap: 6,
                             marginTop: 10,
                             padding: '8px 14px',
-                            background: '#ffffff',
+                            background: 'var(--bg-card)',
                             border: '1px solid #cbd5e1',
                             borderRadius: 8,
                             fontSize: 12,

@@ -464,7 +464,7 @@ export default function ProductDetail() {
                   style={{
                     width: 52, height: 52, display: 'flex', alignItems: 'center', justifyContent: 'center',
                     borderRadius: 'var(--radius-lg)', border: '1.5px solid var(--border)',
-                    background: '#fff', color: isWishlisted ? 'var(--danger)' : 'var(--text-muted)',
+                    background: 'var(--bg-card)', color: isWishlisted ? 'var(--danger)' : 'var(--text-muted)',
                     transition: 'all 0.2s', flexShrink: 0, cursor: 'pointer'
                   }}
                 >
@@ -557,7 +557,7 @@ export default function ProductDetail() {
                 { title: 'Đổi trả', content: 'Đổi trả miễn phí trong 7 ngày nếu sản phẩm lỗi do nhà sản xuất.' },
                 { title: 'Thanh toán', content: 'Hỗ trợ thanh toán khi nhận hàng (COD) và chuyển khoản ngân hàng.' },
               ].map(({ title, content }) => (
-                <div key={title} style={{ padding: 'var(--space-5)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', background: '#fff' }}>
+                <div key={title} style={{ padding: 'var(--space-5)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', background: 'var(--bg-card)' }}>
                   <div style={{ fontWeight: 700, fontSize: 'var(--text-base)', marginBottom: 6 }}>{title}</div>
                   <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{content}</div>
                 </div>
@@ -638,7 +638,7 @@ export default function ProductDetail() {
 
               {/* Review writing section */}
               {isAuthenticated && canReview && !alreadyReviewed && (
-                <form onSubmit={handleSubmitReview} style={{ padding: 'var(--space-6)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--space-8)', background: '#fff' }}>
+                <form onSubmit={handleSubmitReview} style={{ padding: 'var(--space-6)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', marginBottom: 'var(--space-8)', background: 'var(--bg-card)' }}>
                   <div style={{ fontWeight: 700, fontSize: 'var(--text-base)', marginBottom: 'var(--space-5)', letterSpacing: '-0.01em' }}>Viết đánh giá</div>
                   {reviewError && <div className="alert alert-danger" style={{ marginBottom: 12, fontSize: 13 }}>{reviewError}</div>}
                   {reviewSuccess && <div className="alert alert-success" style={{ marginBottom: 12, fontSize: 13 }}>{reviewSuccess}</div>}
@@ -661,7 +661,7 @@ export default function ProductDetail() {
               )}
 
               {isAuthenticated && !canReview && !alreadyReviewed && (
-                <div style={{ padding: 'var(--space-4)', background: '#f8fafc', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-6)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ padding: 'var(--space-4)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-6)', fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span>🛍️</span>
                   <span>Chỉ khách hàng đã mua sản phẩm này mới có thể viết đánh giá.</span>
                 </div>
@@ -698,7 +698,7 @@ export default function ProductDetail() {
                   {reviews.map((r, i) => (
                     <div key={r.id} style={{ padding: 'var(--space-5) 0', borderBottom: i < reviews.length - 1 ? '1px solid var(--border)' : 'none' }}>
                       {editingReviewId === r.id ? (
-                        <div style={{ background: '#f8fafc', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+                        <div style={{ background: 'var(--bg)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
                           <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 8 }}>Chỉnh sửa đánh giá của bạn</div>
                           <div style={{ marginBottom: 12 }}>
                             {[1, 2, 3, 4, 5].map((s) => (

@@ -39,7 +39,7 @@ export default function Register() {
   if (success) {
     return (
       <div className="auth-page">
-        <div style={{ width: '100%', maxWidth: 440, margin: '0 auto', textAlign: 'center', padding: 'var(--space-10)', background: '#fff', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)' }}>
+        <div style={{ width: '100%', maxWidth: 440, margin: '0 auto', textAlign: 'center', padding: 'var(--space-10)', background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)' }}>
           <CheckCircle size={64} style={{ color: 'var(--success)', margin: '0 auto 16px' }} />
           <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>Tạo tài khoản thành công!</h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Đang chuyển hướng đến trang đăng nhập...</p>
@@ -92,28 +92,28 @@ export default function Register() {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Họ tên *</label>
-                <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14 }} name="fullName" value={form.fullName} onChange={handleChange} placeholder="Nguyễn Văn A" required />
+                <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14 }} name="fullName" value={form.fullName} onChange={handleChange} placeholder="Nguyễn Văn A" required />
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Số điện thoại (Tùy chọn)</label>
-                <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14 }} name="phone" value={form.phone} onChange={handleChange} placeholder="0912345678" />
+                <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14 }} name="phone" value={form.phone} onChange={handleChange} placeholder="0912345678" />
               </div>
             </div>
             
             <div className="form-group">
               <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Tên đăng nhập *</label>
-              <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14 }} name="username" value={form.username} onChange={handleChange} placeholder="Tối thiểu 3 ký tự" required minLength={3} />
+              <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14 }} name="username" value={form.username} onChange={handleChange} placeholder="Tối thiểu 3 ký tự" required minLength={3} />
             </div>
             
             <div className="form-group">
               <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Email *</label>
-              <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14 }} name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" required />
+              <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14 }} name="email" type="email" value={form.email} onChange={handleChange} placeholder="email@example.com" required />
             </div>
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
               <div className="form-group" style={{ position: 'relative' }}>
                 <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Mật khẩu *</label>
-                <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14, paddingRight: '36px' }} name="password" type={showPw ? 'text' : 'password'} value={form.password}
+                <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14, paddingRight: '36px' }} name="password" type={showPw ? 'text' : 'password'} value={form.password}
                   onChange={handleChange} placeholder="Tối thiểu 6 ký tự" required minLength={6} />
                 <button type="button" onClick={() => setShowPw(p => !p)}
                   style={{ position: 'absolute', right: '12px', top: '34px', color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>
@@ -122,7 +122,7 @@ export default function Register() {
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>Xác nhận *</label>
-                <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14 }} name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="Nhập lại mật khẩu" required />
+                <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14 }} name="confirm" type="password" value={form.confirm} onChange={handleChange} placeholder="Nhập lại mật khẩu" required />
               </div>
             </div>
             

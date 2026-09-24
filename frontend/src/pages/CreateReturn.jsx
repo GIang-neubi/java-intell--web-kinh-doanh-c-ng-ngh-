@@ -85,7 +85,7 @@ export default function CreateReturn() {
 
   return (
     <AccountLayout activeTab="orders">
-      <div style={{ background: '#fff', padding: 24, borderRadius: 12 }}>
+      <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 12 }}>
         <h2>Tạo yêu cầu trả hàng cho Đơn #{order.orderCode}</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           

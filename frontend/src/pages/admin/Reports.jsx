@@ -232,7 +232,7 @@ export default function Reports() {
                   <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={60} tickLine={false} axisLine={false}
                     tickFormatter={(v) => v >= 1e6 ? `${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `${(v/1e3).toFixed(0)}K` : v} />
                   <Tooltip
-                    contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                     formatter={(v) => [formatPrice(v), 'Doanh thu']}
                     labelFormatter={(label) => `Ngày ${label}`} />
                   <Area type="monotone" dataKey="revenue" stroke="#0a3d8f" fill="url(#revGrad)" strokeWidth={2} dot={false} />
@@ -258,7 +258,7 @@ export default function Reports() {
                     <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false}
                       interval={ordersChart.length > 14 ? Math.floor(ordersChart.length / 7) : 0} />
                     <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={40} tickLine={false} axisLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                       formatter={(v) => [v, 'Đơn hàng']} />
                     <Bar dataKey="orders" fill="#f97316" radius={[3, 3, 0, 0]} maxBarWidth={28} />
                   </BarChart>
@@ -293,7 +293,7 @@ export default function Reports() {
                         {categoryPerformance.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                       </Pie>
                       <Tooltip
-                        contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                        contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                         formatter={(v) => [formatPrice(v), 'Doanh thu']} />
                     </PieChart>
                   </ResponsiveContainer>
@@ -402,7 +402,7 @@ export default function Reports() {
                     <YAxis yAxisId="right" tick={{ fontSize: 11, fill: '#9ca3af' }} width={50} tickLine={false} axisLine={false} orientation="right"
                       tickFormatter={(v) => v} />
                     <Tooltip
-                      contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                      contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                       formatter={(v, name) => name === 'revenue' ? [formatPrice(v), 'Doanh thu'] : [v, 'Đơn hàng']} />
                     <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#0a3d8f" strokeWidth={2.5} dot={false} name="Doanh thu" />
                     <Line yAxisId="right" type="monotone" dataKey="orders" stroke="#f97316" strokeWidth={2.5} dot={false} name="Đơn hàng" />
@@ -432,7 +432,7 @@ export default function Reports() {
                     interval={revenueChart.length > 20 ? Math.floor(revenueChart.length / 10) : 0} />
                   <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={60} tickLine={false} axisLine={false}
                     tickFormatter={(v) => v >= 1e6 ? `${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `${(v/1e3).toFixed(0)}K` : v} />
-                  <Tooltip contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                     formatter={(v) => [formatPrice(v), 'Doanh thu']} labelFormatter={(l) => `Ngày ${l}`} />
                   <Area type="monotone" dataKey="revenue" stroke="#0a3d8f" fill="url(#revGrad2)" strokeWidth={2} dot={false} />
                 </AreaChart>
@@ -454,7 +454,7 @@ export default function Reports() {
                     <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false}
                       interval={ordersChart.length > 20 ? Math.floor(ordersChart.length / 10) : 0} />
                     <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={40} tickLine={false} axisLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                       formatter={(v) => [v, 'Đơn hàng']} />
                     <Bar dataKey="orders" fill="#f97316" radius={[3, 3, 0, 0]} maxBarWidth={32} />
                   </BarChart>
@@ -495,7 +495,7 @@ export default function Reports() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
                     <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={40} tickLine={false} axisLine={false} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                       formatter={(v) => [v, 'Đơn hàng']} />
                     <Bar dataKey="orders" fill="#f97316" radius={[3, 3, 0, 0]} maxBarWidth={40} />
                   </BarChart>
@@ -552,7 +552,7 @@ export default function Reports() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 11, fill: '#9ca3af' }} allowDecimals={false} />
                   <YAxis type="category" dataKey="productName" tick={{ fontSize: 11, fill: '#9ca3af' }} width={120} />
-                  <Tooltip contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  <Tooltip contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                     formatter={(v, name, props) => [`${v} SP — ${formatPrice(props.payload.revenue)}`, 'Đã bán']} />
                   <Bar dataKey="totalSold" fill="#f97316" radius={[0, 4, 4, 0]} name="Đã bán" maxBarWidth={40} />
                 </BarChart>

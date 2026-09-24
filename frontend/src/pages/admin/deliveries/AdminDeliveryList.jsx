@@ -337,7 +337,7 @@ export default function AdminDeliveryList() {
                 style={{
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   width: 36, height: 36, borderRadius: '10px',
-                  background: '#ffffff', border: '1px solid var(--border)',
+                  background: 'var(--bg-card)', border: '1px solid var(--border)',
                   color: 'var(--text-primary)', cursor: 'pointer'
                 }}
                 title="Làm mới danh sách"
@@ -631,7 +631,7 @@ export default function AdminDeliveryList() {
                               style={{
                                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                                 width: 30, height: 30, borderRadius: '8px',
-                                background: '#f8fafc', border: '1px solid var(--border)',
+                                background: 'var(--bg)', border: '1px solid var(--border)',
                                 color: 'var(--text-primary)', textDecoration: 'none'
                               }}
                               title="Xem chi tiết lộ trình"

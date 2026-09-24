@@ -157,9 +157,9 @@ export default function WarehouseOverviewMap({ warehouses = [], loading = false 
   const mappedCount = warehouses.filter((w) => typeof w.latitude === 'number' && typeof w.longitude === 'number').length;
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16, background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl, 14px)', overflow: 'hidden' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16, background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl, 14px)', overflow: 'hidden' }}>
       {/* Cột bản đồ */}
-      <div style={{ position: 'relative', height: 560, background: '#f8fafc' }}>
+      <div style={{ position: 'relative', height: 560, background: 'var(--bg)' }}>
         <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
         {/* Legend Overlay */}

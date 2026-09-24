@@ -241,7 +241,7 @@ export default function Orders() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
                           {(order.items || []).map(item => (
                             <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                              <div style={{ width: 56, height: 56, background: '#fff', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6 }}>
+                              <div style={{ width: 56, height: 56, background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6 }}>
                                 {item.productImage
                                   ? <img src={resolveImageUrl(item.productImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} onError={(e) => { e.target.style.display = 'none'; }} />
                                   : <Package size={20} style={{ color: 'var(--text-muted)' }} />}

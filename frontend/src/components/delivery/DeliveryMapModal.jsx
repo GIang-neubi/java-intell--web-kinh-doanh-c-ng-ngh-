@@ -101,7 +101,7 @@ export default function DeliveryMapModal({ isOpen, onClose, delivery }) {
         </div>
 
         {/* Modal Body: Leaflet Live Map */}
-        <div style={{ padding: '12px', background: '#f8fafc' }}>
+        <div style={{ padding: '12px', background: 'var(--bg)' }}>
           <LiveDeliveryMap
             delivery={current}
             height={460}

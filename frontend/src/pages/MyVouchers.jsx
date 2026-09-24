@@ -231,7 +231,7 @@ export default function MyVouchers() {
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '6px 12px',
-                        background: '#f8fafc',
+                        background: 'var(--bg)',
                         border: '1px dashed #cbd5e1',
                         borderRadius: 8,
                       }}

@@ -110,7 +110,7 @@ export default function AdminProfile() {
 
       {/* Admin Identity Hero Card */}
       <div style={{
-        background: '#ffffff',
+        background: 'var(--bg-card)',
         border: '1px solid var(--border)',
         borderRadius: '16px',
         padding: '24px',
@@ -169,7 +169,7 @@ export default function AdminProfile() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))', gap: '24px' }}>
         {/* Profile Info Form */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '24px',
@@ -218,7 +218,7 @@ export default function AdminProfile() {
                 placeholder="Nhập họ và tên..."
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: '10px',
-                  border: '1px solid var(--border)', background: '#ffffff',
+                  border: '1px solid var(--border)', background: 'var(--bg-card)',
                   fontSize: '13px', outline: 'none', color: 'var(--text-primary)'
                 }}
                 required
@@ -235,7 +235,7 @@ export default function AdminProfile() {
                 disabled
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: '10px',
-                  border: '1px solid var(--border)', background: '#f8fafc',
+                  border: '1px solid var(--border)', background: 'var(--bg)',
                   fontSize: '13px', color: 'var(--text-muted)', cursor: 'not-allowed'
                 }}
               />
@@ -251,7 +251,7 @@ export default function AdminProfile() {
                 disabled
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: '10px',
-                  border: '1px solid var(--border)', background: '#f8fafc',
+                  border: '1px solid var(--border)', background: 'var(--bg)',
                   fontSize: '13px', color: 'var(--text-muted)', cursor: 'not-allowed'
                 }}
               />
@@ -268,7 +268,7 @@ export default function AdminProfile() {
                 placeholder="0912345678"
                 style={{
                   width: '100%', padding: '11px 14px', borderRadius: '10px',
-                  border: '1px solid var(--border)', background: '#ffffff',
+                  border: '1px solid var(--border)', background: 'var(--bg-card)',
                   fontSize: '13px', outline: 'none', color: 'var(--text-primary)'
                 }}
               />
@@ -295,7 +295,7 @@ export default function AdminProfile() {
 
         {/* Password Change Form */}
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border)',
           borderRadius: '16px',
           padding: '24px',
@@ -345,7 +345,7 @@ export default function AdminProfile() {
                   placeholder="Nhập mật khẩu hiện tại..."
                   style={{
                     width: '100%', padding: '11px 40px 11px 14px', borderRadius: '10px',
-                    border: '1px solid var(--border)', background: '#ffffff',
+                    border: '1px solid var(--border)', background: 'var(--bg-card)',
                     fontSize: '13px', outline: 'none', color: 'var(--text-primary)'
                   }}
                   required
@@ -372,7 +372,7 @@ export default function AdminProfile() {
                   placeholder="Nhập mật khẩu mới..."
                   style={{
                     width: '100%', padding: '11px 40px 11px 14px', borderRadius: '10px',
-                    border: '1px solid var(--border)', background: '#ffffff',
+                    border: '1px solid var(--border)', background: 'var(--bg-card)',
                     fontSize: '13px', outline: 'none', color: 'var(--text-primary)'
                   }}
                   required
@@ -400,7 +400,7 @@ export default function AdminProfile() {
                   placeholder="Nhập lại mật khẩu mới..."
                   style={{
                     width: '100%', padding: '11px 40px 11px 14px', borderRadius: '10px',
-                    border: '1px solid var(--border)', background: '#ffffff',
+                    border: '1px solid var(--border)', background: 'var(--bg-card)',
                     fontSize: '13px', outline: 'none', color: 'var(--text-primary)'
                   }}
                   required

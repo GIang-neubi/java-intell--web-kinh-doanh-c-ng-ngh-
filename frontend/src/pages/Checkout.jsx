@@ -389,7 +389,7 @@ export default function Checkout() {
                 <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Hệ thống sẽ kiểm tra thanh toán mỗi 5 giây...</p>
               </div>
 
-              <div style={{ background: '#fff', padding: 32, borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
+              <div style={{ background: 'var(--bg-card)', padding: 32, borderRadius: 'var(--radius-xl)', border: '1px solid var(--border)', boxShadow: 'var(--shadow-sm)' }}>
                 {/* QR Code VietQR */}
                 <div style={{ textAlign: 'center', marginBottom: 32 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -398,7 +398,7 @@ export default function Checkout() {
                   <img
                     src={qrUrl}
                     alt="QR thanh toán"
-                    style={{ width: 240, height: 240, border: '1px solid var(--border)', borderRadius: 16, margin: '0 auto', display: 'block', padding: 8, background: '#fff' }}
+                    style={{ width: 240, height: 240, border: '1px solid var(--border)', borderRadius: 16, margin: '0 auto', display: 'block', padding: 8, background: 'var(--bg-card)' }}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                   <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 12 }}>Hỗ trợ tất cả ứng dụng ngân hàng (VietQR)</p>
@@ -424,7 +424,7 @@ export default function Checkout() {
                   ))}
 
                   {/* Nội dung chuyển khoản - quan trọng nhất */}
-                  <div style={{ marginTop: 24, padding: 20, background: '#f8fafc', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)' }}>
+                  <div style={{ marginTop: 24, padding: 20, background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)' }}>
                     <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Nội dung chuyển khoản (Bắt buộc)
                     </div>
@@ -437,7 +437,7 @@ export default function Checkout() {
                         onClick={() => copyTransferContent(placedOrder.transferContent)}
                         style={{ 
                           display: 'flex', alignItems: 'center', gap: 6,
-                          padding: '8px 12px', background: '#fff', border: '1px solid var(--border)', 
+                          padding: '8px 12px', background: 'var(--bg-card)', border: '1px solid var(--border)', 
                           borderRadius: 'var(--radius-sm)', fontSize: 13, fontWeight: 600, 
                           color: copied ? 'var(--success)' : 'var(--text-primary)',
                           cursor: 'pointer', transition: 'all .2s'
@@ -590,18 +590,18 @@ export default function Checkout() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)', marginBottom: 'var(--space-4)' }}>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Họ tên</label>
-                    <input className="form-input" style={{ background: '#fff' }} name="fullName" value={form.fullName} onChange={handleChange} placeholder="Nguyễn Văn A" required />
+                    <input className="form-input" style={{ background: 'var(--bg-card)' }} name="fullName" value={form.fullName} onChange={handleChange} placeholder="Nguyễn Văn A" required />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Số điện thoại</label>
-                    <input className="form-input" style={{ background: '#fff' }} name="phone" value={form.phone} onChange={handleChange} placeholder="0912345678" required />
+                    <input className="form-input" style={{ background: 'var(--bg-card)' }} name="phone" value={form.phone} onChange={handleChange} placeholder="0912345678" required />
                   </div>
                 </div>
                 <div className="form-group" style={{ marginBottom: 'var(--space-4)' }}>
                   <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Địa chỉ giao hàng</label>
                   <input
                     className="form-input"
-                    style={{ background: '#fff' }}
+                    style={{ background: 'var(--bg-card)' }}
                     name="address"
                     value={form.address}
                     onChange={(e) => {
@@ -619,7 +619,7 @@ export default function Checkout() {
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Ghi chú (Tùy chọn)</label>
-                  <textarea className="form-input" style={{ background: '#fff', resize: 'vertical' }} name="note" value={form.note} onChange={handleChange} rows={2} placeholder="Yêu cầu giao hàng đặc biệt..." />
+                  <textarea className="form-input" style={{ background: 'var(--bg-card)', resize: 'vertical' }} name="note" value={form.note} onChange={handleChange} rows={2} placeholder="Yêu cầu giao hàng đặc biệt..." />
                 </div>
 
                 {/* Option to save new address to address book */}
@@ -665,7 +665,7 @@ export default function Checkout() {
                         checked={isSelected}
                         onChange={() => handleShippingChange(m.shippingMethod)}
                       />
-                      <div className="payment-option-icon" style={{ background: '#f8fafc', borderRadius: 8 }}>
+                      <div className="payment-option-icon" style={{ background: 'var(--bg)', borderRadius: 8 }}>
                         {icon}
                       </div>
                       <div style={{ flex: 1 }}>
@@ -685,7 +685,7 @@ export default function Checkout() {
 
                 {/* Thông tin kho và khối lượng đơn hàng từ Backend */}
                 {previewData && (
-                  <div style={{ marginTop: 12, padding: '10px 14px', background: '#f8fafc', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: 12, color: 'var(--text-secondary)' }}>
+                  <div style={{ marginTop: 12, padding: '10px 14px', background: 'var(--bg)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', fontSize: 12, color: 'var(--text-secondary)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
                       <MapPin size={14} color="var(--primary)" />
                       <span>Xuất kho dự kiến: <strong style={{ color: 'var(--text-primary)' }}>{previewData.warehouseName || previewData.warehouseCode || 'Kho Tổng H&G'}</strong></span>
@@ -767,10 +767,10 @@ export default function Checkout() {
                   </div>
                 ) : (
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <input className="form-input" placeholder="Nhập mã..." style={{ flex: 1, textTransform: 'uppercase', background: '#fff' }}
+                    <input className="form-input" placeholder="Nhập mã..." style={{ flex: 1, textTransform: 'uppercase', background: 'var(--bg-card)' }}
                       value={voucherInput} onChange={(e) => setVoucherInput(e.target.value.toUpperCase())}
                       onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), applyVoucher())} />
-                    <button type="button" className="btn btn-outline" style={{ background: '#fff' }} onClick={applyVoucher} disabled={voucherLoading || !voucherInput.trim()}>
+                    <button type="button" className="btn btn-outline" style={{ background: 'var(--bg-card)' }} onClick={applyVoucher} disabled={voucherLoading || !voucherInput.trim()}>
                       {voucherLoading ? '...' : 'Áp dụng'}
                     </button>
                   </div>
@@ -883,7 +883,7 @@ export default function Checkout() {
         >
           <div
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               borderRadius: 20,
               maxWidth: 560,
               width: '100%',
@@ -945,14 +945,14 @@ export default function Checkout() {
                             ⭐ Mặc định
                           </span>
                         )}
-                        <span style={{ fontSize: 11, fontWeight: 700, background: '#f8fafc', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, background: 'var(--bg)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)' }}>
                           {addr.addressType === 'OFFICE' ? '🏢 Văn phòng' : addr.addressType === 'OTHER' ? '📍 Khác' : '🏠 Nhà riêng'}
                         </span>
                       </div>
                       <div style={{
                         width: 20, height: 20, borderRadius: '50%',
                         border: isSelected ? '6px solid var(--primary)' : '2px solid var(--border)',
-                        background: '#fff', flexShrink: 0
+                        background: 'var(--bg-card)', flexShrink: 0
                       }} />
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.4 }}>
@@ -991,7 +991,7 @@ export default function Checkout() {
       {/* Modal Chọn Voucher Khả dụng */}
       {voucherModalOpen && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-          <div style={{ background: '#fff', borderRadius: 'var(--radius-xl)', maxWidth: 500, width: '100%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', maxWidth: 500, width: '100%', maxHeight: '85vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ fontWeight: 800, fontSize: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Ticket size={20} color="var(--primary)" />
@@ -1048,7 +1048,7 @@ export default function Checkout() {
                 );
               })}
             </div>
-            <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+            <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg)' }}>
               <Link to="/account/vouchers" style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>
                 Xem tất cả mã giảm giá
               </Link>

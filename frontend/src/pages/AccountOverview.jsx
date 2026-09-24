@@ -405,11 +405,11 @@ export default function AccountOverview() {
                 position: 'relative', display: 'flex', height: 10, width: 10
               }}>
                 <span style={{
-                  position: 'absolute', inset: 0, borderRadius: '50%', background: '#ffffff', opacity: 0.75,
+                  position: 'absolute', inset: 0, borderRadius: '50%', background: 'var(--bg-card)', opacity: 0.75,
                   animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite'
                 }} />
                 <span style={{
-                  position: 'relative', borderRadius: '50%', height: 10, width: 10, background: '#ffffff'
+                  position: 'relative', borderRadius: '50%', height: 10, width: 10, background: 'var(--bg-card)'
                 }} />
               </span>
               <span style={{
@@ -452,7 +452,7 @@ export default function AccountOverview() {
                 to={`/orders/${activeOrder.id}#live-delivery-map-section`}
                 style={{
                   padding: '10px 18px', borderRadius: '12px',
-                  background: '#ffffff', color: activeOrder.status === 'SHIPPING' ? '#065f46' : '#1e40af',
+                  background: 'var(--bg-card)', color: activeOrder.status === 'SHIPPING' ? '#065f46' : '#1e40af',
                   fontSize: '13px', fontWeight: 800, textDecoration: 'none',
                   display: 'inline-flex', alignItems: 'center', gap: 6,
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
@@ -482,7 +482,7 @@ export default function AccountOverview() {
       {/* ── CARD 2B: Recently Delivered Order with Proof of Delivery Showcase (nếu không có active shipping) ── */}
       {!activeOrder && recentDeliveredOrder && (
         <div style={{
-          background: '#ffffff',
+          background: 'var(--bg-card)',
           borderRadius: '18px',
           padding: '18px 20px',
           border: '1px solid #d8b4fe',
@@ -586,7 +586,7 @@ export default function AccountOverview() {
           <div
             key={label}
             style={{
-              background: '#ffffff',
+              background: 'var(--bg-card)',
               border: '1px solid var(--border)',
               borderRadius: '16px',
               padding: '16px',
@@ -636,7 +636,7 @@ export default function AccountOverview() {
               to={path}
               style={{
                 textDecoration: 'none',
-                background: '#ffffff',
+                background: 'var(--bg-card)',
                 border: '1px solid var(--border)',
                 borderRadius: '16px',
                 padding: '18px',
@@ -717,7 +717,7 @@ export default function AccountOverview() {
 
         {recentOrders.length === 0 ? (
           <div style={{
-            textAlign: 'center', padding: '48px 20px', background: '#ffffff',
+            textAlign: 'center', padding: '48px 20px', background: 'var(--bg-card)',
             border: '1px dashed var(--border)', borderRadius: '18px'
           }}>
             <Package size={44} style={{ color: 'var(--text-muted)', margin: '0 auto 12px' }} />
@@ -753,7 +753,7 @@ export default function AccountOverview() {
                   key={order.id}
                   onClick={() => navigate(`/orders/${order.id}`)}
                   style={{
-                    background: '#ffffff',
+                    background: 'var(--bg-card)',
                     border: '1px solid var(--border)',
                     borderRadius: '16px',
                     padding: '16px 18px',
@@ -853,7 +853,7 @@ export default function AccountOverview() {
                           }}
                           style={{
                             padding: '6px 12px', borderRadius: '8px',
-                            background: '#f8fafc', color: 'var(--text-primary)', border: '1px solid var(--border)',
+                            background: 'var(--bg)', color: 'var(--text-primary)', border: '1px solid var(--border)',
                             fontSize: '12px', fontWeight: 700, cursor: 'pointer',
                             display: 'inline-flex', alignItems: 'center', gap: 4
                           }}
@@ -873,7 +873,7 @@ export default function AccountOverview() {
 
       {/* ── CARD 6: Trust & Customer Assurance Banner ── */}
       <div style={{
-        background: '#f8fafc',
+        background: 'var(--bg)',
         border: '1px solid var(--border)',
         borderRadius: '16px',
         padding: '16px 20px',

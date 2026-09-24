@@ -108,7 +108,7 @@ export default function AISettings() {
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(440px, 1fr))', gap: '24px' }}>
         {/* Form Cấu hình */}
-        <div className="hg-admin-card" style={{ background: '#fff', borderRadius: '12px', padding: '24px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div className="hg-admin-card" style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '24px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
           <form onSubmit={handleSave}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', paddingBottom: '16px', borderBottom: '1px solid #e2e8f0' }}>
               <div>
@@ -130,7 +130,7 @@ export default function AISettings() {
                   <span style={{
                     position: 'absolute', content: '""', height: '20px', width: '20px',
                     left: config.enabled ? '24px' : '4px', bottom: '3px',
-                    backgroundColor: '#fff', transition: '0.3s', borderRadius: '50%'
+                    backgroundColor: 'var(--bg-card)', transition: '0.3s', borderRadius: '50%'
                   }} />
                 </span>
               </label>
@@ -176,7 +176,7 @@ export default function AISettings() {
               <select 
                 value={config.model}
                 onChange={(e) => setConfig({ ...config, model: e.target.value })}
-                style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', background: '#fff' }}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #d1d5db', fontSize: '13px', background: 'var(--bg-card)' }}
               >
                 <option value="gemini-1.5-flash">gemini-1.5-flash (Khuyên dùng: Tốc độ cao, tối ưu chi phí)</option>
                 <option value="gemini-2.5-flash">gemini-2.5-flash (Thế hệ mới nhất, suy luận nhanh)</option>
@@ -246,7 +246,7 @@ export default function AISettings() {
         </div>
 
         {/* Khung Thử nghiệm Test Console */}
-        <div className="hg-admin-card" style={{ background: '#fff', borderRadius: '12px', padding: '24px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
+        <div className="hg-admin-card" style={{ background: 'var(--bg-card)', borderRadius: '12px', padding: '24px', border: '1px solid #e2e8f0', boxShadow: '0 1px 3px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ marginBottom: '16px', paddingBottom: '12px', borderBottom: '1px solid #e2e8f0' }}>
             <strong style={{ fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Bot size={18} style={{ color: '#0a3d8f' }} />
@@ -315,7 +315,7 @@ export default function AISettings() {
           <div style={{
             flex: 1,
             minHeight: '220px',
-            background: '#f8fafc',
+            background: 'var(--bg)',
             borderRadius: '8px',
             border: '1px solid #e2e8f0',
             padding: '14px',

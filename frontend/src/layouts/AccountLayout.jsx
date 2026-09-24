@@ -147,7 +147,7 @@ export default function AccountLayout({ children, activeTab = 'profile' }) {
                 top: 0,
                 bottom: 0,
                 width: 280,
-                background: '#fff',
+                background: 'var(--bg-card)',
                 padding: 'var(--space-6)',
                 overflowY: 'auto',
                 boxShadow: 'var(--shadow-lg)',

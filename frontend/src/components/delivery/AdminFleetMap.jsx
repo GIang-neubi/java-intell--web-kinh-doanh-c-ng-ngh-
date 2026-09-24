@@ -296,7 +296,7 @@ export default function AdminFleetMap({
 
   return (
     <div style={{
-      background: '#ffffff',
+      background: 'var(--bg-card)',
       borderRadius: '16px',
       border: '1px solid var(--border)',
       overflow: 'hidden',
@@ -307,7 +307,7 @@ export default function AdminFleetMap({
       {/* Header bar: Command Control */}
       <div style={{
         padding: '14px 18px',
-        background: '#f8fafc',
+        background: 'var(--bg)',
         borderBottom: '1px solid var(--border)',
         display: 'flex',
         alignItems: 'center',
@@ -378,10 +378,10 @@ export default function AdminFleetMap({
           overflow: 'hidden'
         }}>
           {/* Search box */}
-          <div style={{ padding: '12px', borderBottom: '1px solid #f1f5f9', background: '#ffffff' }}>
+          <div style={{ padding: '12px', borderBottom: '1px solid #f1f5f9', background: 'var(--bg-card)' }}>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
-              background: '#f8fafc', border: '1px solid var(--border)',
+              background: 'var(--bg)', border: '1px solid var(--border)',
               borderRadius: '8px', padding: '6px 10px', fontSize: '12px'
             }}>
               <Search size={14} style={{ color: 'var(--text-muted)' }} />

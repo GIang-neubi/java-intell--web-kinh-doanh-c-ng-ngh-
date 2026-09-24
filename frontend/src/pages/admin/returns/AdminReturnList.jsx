@@ -15,7 +15,7 @@ export default function AdminReturnList() {
   }, []);
 
   return (
-    <div style={{ background: '#fff', padding: 24, borderRadius: 12 }}>
+    <div style={{ background: 'var(--bg-card)', padding: 24, borderRadius: 12 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 24 }}>
         <h2 style={{ margin: 0 }}>Quản lý Yêu cầu Trả hàng</h2>
       </div>

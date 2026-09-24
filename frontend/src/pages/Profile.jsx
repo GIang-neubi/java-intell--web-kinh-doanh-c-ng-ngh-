@@ -95,7 +95,7 @@ export default function Profile() {
     </label>
   );
   const FormInput = (props) => (
-    <input className="form-input" style={{ background: '#fff', padding: '12px 16px', fontSize: 14, ...props.style }} {...props} />
+    <input className="form-input" style={{ background: 'var(--bg-card)', padding: '12px 16px', fontSize: 14, ...props.style }} {...props} />
   );
 
   return (
@@ -165,7 +165,7 @@ export default function Profile() {
                 value={pwForm.oldPassword}
                 onChange={(e) => setPwForm(p => ({ ...p, oldPassword: e.target.value }))}
                 required placeholder="Nhập mật khẩu hiện tại"
-                style={{ paddingRight: 44, background: '#fff', padding: '12px 44px 12px 16px', fontSize: 14 }}
+                style={{ paddingRight: 44, background: 'var(--bg-card)', padding: '12px 44px 12px 16px', fontSize: 14 }}
               />
               <button type="button" onClick={() => setShowOld(v => !v)}
                 style={{ position: 'absolute', right: 14, top: 35, color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>
@@ -180,7 +180,7 @@ export default function Profile() {
                 value={pwForm.newPassword}
                 onChange={(e) => setPwForm(p => ({ ...p, newPassword: e.target.value }))}
                 required minLength={6} placeholder="Tối thiểu 6 ký tự"
-                style={{ paddingRight: 44, background: '#fff', padding: '12px 44px 12px 16px', fontSize: 14 }}
+                style={{ paddingRight: 44, background: 'var(--bg-card)', padding: '12px 44px 12px 16px', fontSize: 14 }}
               />
               <button type="button" onClick={() => setShowNew(v => !v)}
                 style={{ position: 'absolute', right: 14, top: 35, color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}>

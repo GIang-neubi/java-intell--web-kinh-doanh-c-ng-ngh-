@@ -298,7 +298,7 @@ export default function Dashboard() {
             className="hg-delivery-metric-card"
           >
             <div style={{
-              background: '#ffffff', border: '1px solid #fef08a', borderRadius: '12px',
+              background: 'var(--bg-card)', border: '1px solid #fef08a', borderRadius: '12px',
               padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px',
               position: 'relative', overflow: 'hidden', height: '100%',
               boxShadow: '0 2px 6px rgba(0,0,0,0.02)', transition: 'all 0.2s ease'
@@ -328,7 +328,7 @@ export default function Dashboard() {
             className="hg-delivery-metric-card"
           >
             <div style={{
-              background: '#ffffff', border: '1px solid #bae6fd', borderRadius: '12px',
+              background: 'var(--bg-card)', border: '1px solid #bae6fd', borderRadius: '12px',
               padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px',
               position: 'relative', overflow: 'hidden', height: '100%',
               boxShadow: '0 2px 6px rgba(0,0,0,0.02)', transition: 'all 0.2s ease'
@@ -358,7 +358,7 @@ export default function Dashboard() {
             className="hg-delivery-metric-card"
           >
             <div style={{
-              background: '#ffffff', border: '1px solid #a7f3d0', borderRadius: '12px',
+              background: 'var(--bg-card)', border: '1px solid #a7f3d0', borderRadius: '12px',
               padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px',
               position: 'relative', overflow: 'hidden', height: '100%',
               boxShadow: '0 2px 6px rgba(0,0,0,0.02)', transition: 'all 0.2s ease'
@@ -388,7 +388,7 @@ export default function Dashboard() {
             className="hg-delivery-metric-card"
           >
             <div style={{
-              background: '#ffffff', border: '1px solid #fecaca', borderRadius: '12px',
+              background: 'var(--bg-card)', border: '1px solid #fecaca', borderRadius: '12px',
               padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px',
               position: 'relative', overflow: 'hidden', height: '100%',
               boxShadow: '0 2px 6px rgba(0,0,0,0.02)', transition: 'all 0.2s ease'
@@ -418,7 +418,7 @@ export default function Dashboard() {
             className="hg-delivery-metric-card"
           >
             <div style={{
-              background: '#ffffff', border: '1px solid #fed7aa', borderRadius: '12px',
+              background: 'var(--bg-card)', border: '1px solid #fed7aa', borderRadius: '12px',
               padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px',
               position: 'relative', overflow: 'hidden', height: '100%',
               boxShadow: '0 2px 6px rgba(0,0,0,0.02)', transition: 'all 0.2s ease'
@@ -446,7 +446,7 @@ export default function Dashboard() {
         <div className="hg-logistics-grid-details">
           {/* Operations & Success Rate breakdown */}
           <div style={{
-            background: '#ffffff', borderRadius: '12px', border: '1px solid var(--border)',
+            background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border)',
             padding: '18px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '16px'
           }}>
             <div>
@@ -566,7 +566,7 @@ export default function Dashboard() {
 
           {/* Live Recent Deliveries Stream */}
           <div style={{
-            background: '#ffffff', borderRadius: '12px', border: '1px solid var(--border)',
+            background: 'var(--bg-card)', borderRadius: '12px', border: '1px solid var(--border)',
             padding: '18px', display: 'flex', flexDirection: 'column'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
@@ -594,7 +594,7 @@ export default function Dashboard() {
                       style={{
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                         padding: '10px 12px', borderRadius: '10px',
-                        background: '#f8fafc', border: '1px solid #f1f5f9',
+                        background: 'var(--bg)', border: '1px solid #f1f5f9',
                         fontSize: '12px', gap: '10px', transition: 'all 0.15s ease'
                       }}
                     >
@@ -646,7 +646,7 @@ export default function Dashboard() {
                           style={{
                             width: 28, height: 28, borderRadius: 6,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: '#ffffff', border: '1px solid var(--border)',
+                            background: 'var(--bg-card)', border: '1px solid var(--border)',
                             color: 'var(--text-primary)', textDecoration: 'none'
                           }}
                         >
@@ -688,7 +688,7 @@ export default function Dashboard() {
                 <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={60} tickLine={false} axisLine={false}
                   tickFormatter={(v) => v >= 1e6 ? `${(v/1e6).toFixed(1)}M` : v >= 1e3 ? `${(v/1e3).toFixed(0)}K` : v} />
                 <Tooltip
-                  contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                   formatter={(v) => [formatPrice(v), 'Doanh thu']}
                   labelFormatter={(label) => `Ngày ${label}`} />
                 <Area type="monotone" dataKey="revenue" stroke="#0a3d8f" fill="url(#revFill)" strokeWidth={2} dot={false} />
@@ -713,7 +713,7 @@ export default function Dashboard() {
                   interval={ordersChart.length > 14 ? Math.floor(ordersChart.length / 7) : 0} />
                 <YAxis tick={{ fontSize: 11, fill: '#9ca3af' }} width={40} tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ background: '#fff', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                   formatter={(v) => [v, 'Đơn hàng']} />
                 <Bar dataKey="orders" fill="#f97316" radius={[4, 4, 0, 0]} maxBarWidth={32} />
               </BarChart>
