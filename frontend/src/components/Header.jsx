@@ -250,7 +250,7 @@ export default function Header() {
         .hg-header {
           position: sticky;
           top: 0;
-          z-index: 100;
+          z-index: 999;
           padding: var(--space-3) var(--space-4);
         }
         .hg-header-inner {

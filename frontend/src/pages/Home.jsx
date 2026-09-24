@@ -7,6 +7,7 @@ import PageLoading from '../components/PageStates';
 import { fetchProducts } from '../api/products';
 import { fetchCategories } from '../api/categories';
 import { fetchBrands } from '../api/brands';
+import { resolveImageUrl } from '../utils/imageUrl';
 
 const CAT_ICONS = [Camera, Laptop, Smartphone, Headphones, Package, RotateCcw];
 
@@ -41,10 +42,12 @@ const FAMOUS_LAPTOP_BRANDS = [
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [homeProducts, setHomeProducts] = useState([]);
   const [saleProducts, setSaleProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   const getBrandLink = (brandName) => {
     const matched = brands.find((b) => b.name.toLowerCase() === brandName.toLowerCase());
@@ -56,24 +59,34 @@ export default function Home() {
     Promise.all([
       fetchCategories(),
       fetchBrands(),
-      fetchProducts({ pageNo: 0, pageSize: 10, sortBy: 'id', sortDir: 'desc' }),
+      fetchProducts({ pageNo: 0, pageSize: 15, sortBy: 'id', sortDir: 'desc' }),
     ])
       .then(([cats, brs, prodData]) => {
         setCategories(cats.slice(0, 6));
         setBrands(brs);
         const products = prodData.content || [];
         setFeaturedProducts(products.slice(0, 5));
+        setHomeProducts(products.slice(0, 15));
         const withSale = products.filter((p) => p.salePrice != null);
         setSaleProducts(withSale.length > 0 ? withSale.slice(0, 5) : products.slice(0, 5));
       })
       .catch(() => {
         setFeaturedProducts([]);
+        setHomeProducts([]);
         setSaleProducts([]);
         setCategories([]);
         setBrands([]);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (featuredProducts.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % featuredProducts.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [featuredProducts]);
 
   if (loading) {
     return (
@@ -122,24 +135,96 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="hg-hero-visual hg-hero-animate hg-hero-animate-d2">
-            <div className="hg-hero-glow" />
-            <div className="hg-hero-card hg-hero-card-top">
-              <img
-                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80"
-                alt="Máy ảnh"
-                className="hg-hero-card-img"
-                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.background = 'var(--bg)'; }}
-              />
-            </div>
-            <div className="hg-hero-card hg-hero-card-bottom">
-              <img
-                src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80"
-                alt="Laptop"
-                className="hg-hero-card-img"
-                onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.style.background = 'var(--bg)'; }}
-              />
-            </div>
+          <div className="hg-hero-visual hg-hero-animate hg-hero-animate-d2" style={{ position: 'relative', width: '100%', height: '100%', minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="hg-hero-glow" style={{ position: 'absolute', width: '100%', height: '100%', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%)', zIndex: 0 }} />
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((p, idx) => (
+                <div
+                  key={p.id}
+                  className="hg-hero-carousel-item"
+                  style={{
+                    position: 'absolute',
+                    opacity: idx === currentHeroIndex ? 1 : 0,
+                    transform: idx === currentHeroIndex ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+                    transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                    pointerEvents: idx === currentHeroIndex ? 'auto' : 'none',
+                    zIndex: idx === currentHeroIndex ? 10 : 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    background: 'rgba(255, 255, 255, 0.05)',
+                    backdropFilter: 'blur(16px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: 'var(--radius-2xl)',
+                    padding: 'var(--space-6)',
+                    boxShadow: '0 24px 48px rgba(0,0,0,0.15)',
+                    width: '90%',
+                    maxWidth: '380px'
+                  }}
+                >
+                  <div style={{ background: '#fff', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4)', width: '100%', aspectRatio: '1', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 'var(--space-5)' }}>
+                    <img
+                      src={resolveImageUrl(p.image)}
+                      alt={p.name}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                        filter: 'drop-shadow(0 12px 24px rgba(0,0,0,0.12))',
+                      }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                  </div>
+                  <div style={{ textAlign: 'center', width: '100%' }}>
+                    <h3 style={{ color: '#fff', fontSize: 'var(--text-xl)', fontWeight: 700, marginBottom: 'var(--space-2)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{p.name}</h3>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: 12, alignItems: 'center' }}>
+                      <span style={{ color: 'var(--accent)', fontSize: 'var(--text-2xl)', fontWeight: 800 }}>
+                        {p.salePrice ? p.salePrice.toLocaleString() : p.price?.toLocaleString()} đ
+                      </span>
+                      {p.salePrice && (
+                        <span style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'line-through', fontSize: 'var(--text-sm)' }}>
+                          {p.price?.toLocaleString()} đ
+                        </span>
+                      )}
+                    </div>
+                    <Link to={`/products/${p.id}`} className="btn btn-outline" style={{ marginTop: 'var(--space-4)', color: '#fff', borderColor: 'rgba(255,255,255,0.3)', width: '100%' }}>
+                      Xem chi tiết
+                    </Link>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="hg-hero-card hg-hero-card-top" style={{ zIndex: 1 }}>
+                <img
+                  src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80"
+                  alt="Máy ảnh"
+                  className="hg-hero-card-img"
+                />
+              </div>
+            )}
+
+            {/* Carousel Indicators */}
+            {featuredProducts.length > 0 && (
+              <div style={{ position: 'absolute', bottom: -24, display: 'flex', gap: 8, zIndex: 20 }}>
+                {featuredProducts.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentHeroIndex(idx)}
+                    style={{
+                      width: idx === currentHeroIndex ? 24 : 8,
+                      height: 8,
+                      borderRadius: 4,
+                      background: idx === currentHeroIndex ? '#fff' : 'rgba(255,255,255,0.3)',
+                      transition: 'all 0.4s ease',
+                      cursor: 'pointer',
+                      border: 'none',
+                      padding: 0
+                    }}
+                    aria-label={`Slide ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -179,15 +264,15 @@ export default function Home() {
           <div className="section-header">
             <div>
               <div className="section-eyebrow">Bộ sưu tập</div>
-              <h2 className="section-title">Sản phẩm nổi bật</h2>
+              <h2 className="section-title">Danh sách sản phẩm</h2>
             </div>
             <Link to="/products" style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 8 }}>
               Xem tất cả <ArrowRight size={14} />
             </Link>
           </div>
-          {featuredProducts.length > 0 ? (
-            <div className="hg-products-grid">
-              {featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}
+          {homeProducts.length > 0 ? (
+            <div className="product-grid">
+              {homeProducts.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           ) : (
             <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: 'var(--space-12) 0' }}>Chưa có sản phẩm nào.</div>
@@ -195,29 +280,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Flash Sale */}
-      {saleProducts.length > 0 && (
-        <section className="hg-flash-section">
-          <div className="container hg-flash-inner">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 'var(--space-12)' }}>
-              <div>
-                <div className="section-eyebrow" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)' }}>Ưu đãi đặc biệt</div>
-                <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: 800, letterSpacing: '-0.03em', marginTop: 'var(--space-4)' }}>Lựa chọn cao cấp</h2>
-              </div>
-              <Link to="/products" style={{ color: 'rgba(255,255,255,0.6)', fontSize: 'var(--text-sm)', display: 'flex', alignItems: 'center', gap: 6, textDecoration: 'none' }}>
-                Xem thêm <ChevronRight size={14} />
-              </Link>
-            </div>
-            <div className="hg-flash-grid">
-              {saleProducts.map((p) => (
-                <div key={p.id} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
-                  <ProductCard product={p} />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+
 
       {/* 5. Infinite Scrolling Ticker (Marquee) — Brands */}
       <section className="section hg-ticker-section">
@@ -312,8 +375,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. Recently Viewed */}
-      <RecentlyViewed />
     </main>
   );
 }

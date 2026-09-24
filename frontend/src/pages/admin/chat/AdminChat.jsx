@@ -366,6 +366,7 @@ export default function AdminChat() {
 
               {/* Message List */}
               <div className="hg-chat-main-messages">
+                <div style={{ maxWidth: '900px', width: '100%', display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 {isLoadingMessages ? (
                   <div className="hg-chat-messages-loading">Đang tải tin nhắn...</div>
                 ) : messages.length === 0 ? (
@@ -410,6 +411,7 @@ export default function AdminChat() {
                   })
                 )}
                 <div ref={messagesEndRef} />
+                </div>
               </div>
 
               {/* Canned Quick Replies */}
@@ -431,7 +433,7 @@ export default function AdminChat() {
 
               {/* Message Input Box */}
               <form className="hg-chat-input-form" onSubmit={handleSend}>
-                <div className="hg-chat-input-row">
+                <div className="hg-chat-input-row" style={{ maxWidth: '900px', width: '100%' }}>
                   <input
                     ref={inputRef}
                     type="text"
